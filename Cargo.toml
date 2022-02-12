@@ -1,0 +1,17 @@
+[package]
+name = "nirvana"
+version = "0.1.0"
+authors = ["Florian Büstgens <florian.buestgens@efficient-dev.com>"]
+edition = "2021"
+build = "build.rs"
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
