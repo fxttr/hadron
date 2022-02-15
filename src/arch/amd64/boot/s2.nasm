@@ -21,11 +21,12 @@
 ;; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ;; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ;;
-;;     ____      __               
-;;    / __/___ _/ /________  ____ 
-;;   / /_/ __ `/ / ___/ __ \/ __ \
-;;  / __/ /_/ / / /__/ /_/ / / / /
-;; /_/  \__,_/_/\___/\____/_/ /_/                                
+;;  _____     _                          _    _  _
+;; |  ___|_ _| | ___ ___  _ __  _ _ _ __| |  | || |
+;; | |_ / _` | |/ __/ _ \| '_ \(_|_) '__| |  | || |_
+;; |  _| (_| | | (_| (_) | | | |_ _| |  | |__|__   _|
+;; |_|  \__,_|_|\___\___/|_| |_(_|_)_|  |_____| |_|
+                    
 	
 BASE equ 0xFFFFFFFF80000000 ; Relocate at -2GB
 	
