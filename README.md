@@ -1,3 +1,3 @@
-# Nirvana
+# Falcon::rL4
 
-Nirvana is an experimental microkernel. It has no goal.
+Falcon::rL4 (FrL4) is an experimental microkernel.
