@@ -5,10 +5,8 @@ authors = ["Florian Büstgens <florian.buestgens@efficient-dev.com>"]
 edition = "2021"
 build = "build.rs"
 
-[lib]
-crate-type = ["staticlib"]
-
 [dependencies]
+bootloader = "0.9.8"
 
 [profile.dev]
 panic = "abort"
