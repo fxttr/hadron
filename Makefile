@@ -35,11 +35,11 @@ ${MOUNT_DIR}:
 
 ${IMG_FILE}:
 	@echo "Creating OS disk"
-	@truncate -s 128m $@
-	@mdconfig $@ &>/dev/null
-	@gpart create -s mbr md0
-	@gpart add -t \!11 md0
-	@newfs_msdos -F32 -b 512 /dev/md0s1
+	truncate -s 128m $@
+	mdconfig $@ 
+	gpart create -s mbr md0
+	gpart add -t \!11 md0
+	newfs_msdos -F32 -b 512 /dev/md0s1
 
 .PHONY: clean run-clean
 
