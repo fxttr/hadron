@@ -1,5 +1,5 @@
 [package]
-name = "falcon"
+name = "lumos"
 version = "0.1.0"
 authors = ["Florian Büstgens <florian.buestgens@efficient-dev.com>"]
 edition = "2021"

@@ -1,5 +1,5 @@
 /*
- * Falcon_rL4
+ * LumOS::rL4
  * Copyright (C) 2022 Florian Büstgens
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -14,12 +14,11 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- *  _____     _                          _    _  _
- * |  ___|_ _| | ___ ___  _ __  _ _ _ __| |  | || |
- * | |_ / _` | |/ __/ _ \| '_ \(_|_) '__| |  | || |_
- * |  _| (_| | | (_| (_) | | | |_ _| |  | |__|__   _|
- * |_|  \__,_|_|\___\___/|_| |_(_|_)_|  |_____| |_|
+ *  _                     ___  ____
+ * | |   _   _ _ __ ___  / _ \/ ___|
+ * | |  | | | | '_ ` _ \| | | \___ \
+ * | |__| |_| | | | | | | |_| |___) |
+ * |_____\__,_|_| |_| |_|\___/|____/
 */
 
 #![no_std]

@@ -1,3 +1,3 @@
-# Falcon::rL4
+# LumOS::rL4
 
-Falcon::rL4 (FrL4) is an experimental microkernel.
+LumOS::rL4 (lum4) is an experimental microkernel.
