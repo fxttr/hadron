@@ -12,7 +12,7 @@ compile:
 
 link:
 	@echo "Linking kernel"
-	@ld -T src/link.ld ${BUILD_DIR}/s2.o target/x86_64-unknown-lumos/${PROFILE}/liblumos.rlib -o ${BUILD_DIR}/lumos
+	@ld -T src/link.ld ${BUILD_DIR}/s2.o target/x86_64-unknown-lumos/${PROFILE}/liblumos.a -o ${BUILD_DIR}/lumos
 
 install-bootloader: ${IMG_FILE}
 	@echo "Installing Syndicate"
