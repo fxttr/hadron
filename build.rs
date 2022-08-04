@@ -33,7 +33,7 @@ fn main() {
     
     for file in asm_files {
        	    let object_file = file.split("/").last().unwrap().split(".").nth(0).unwrap().to_owned();
-	let object_file_path = build_dir_arg.join(object_file + ".o");
+	    let object_file_path = build_dir_arg.join(object_file + ".o");
 	
 	    Command::new("nasm")
 	        .arg(&arch_arg[..])
@@ -43,5 +43,5 @@ fn main() {
 
     }
 
-    println!("cargo:rerun-if-changed=build.rs");
+    println!("cargo:rerun-if-changed=Cargo.lock");
 }

@@ -33,7 +33,7 @@ pub mod api;
 pub mod io;
 
 #[no_mangle]
-pub extern "C" fn _start() -> ! {
+pub extern "C" fn _kmain() -> ! {
     kprintln!("Copyright (C) 2022 Florian Buestgens\n  _____     _                          _    _  _\n |  ___|_ _| | ___ ___  _ __  _ _ _ __| |  | || |\n | |_ / _` | |/ __/ _ \\| '_ \\(_|_) '__| |  | || |_\n |  _| (_| | | (_| (_) | | | |_ _| |  | |__|__   _|\n |_|  \\__,_|_|\\___\\___/|_| |_(_|_)_|  |_____| |_|");
     loop {}
 }
