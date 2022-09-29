@@ -42,9 +42,5 @@ macro_rules! kprintln {
 }
 
 pub fn _kprint(args: Arguments<'_>) {
-    use x86_64::instructions::interrupts;
-    
-    interrupts::without_interrupts(|| {
-	let _ = BUFFER.lock().write_fmt(args);
-    })
+    let _ = BUFFER.lock().write_fmt(args);
 }

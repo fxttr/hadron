@@ -1,6 +1,6 @@
 [package]
-name = "lumos"
-version = "0.1.0"
+name = "lumos_rtl4"
+version = "0.0.1"
 authors = ["Florian Büstgens <fb@fx-ttr.de>"]
 edition = "2021"
 build = "build.rs"
@@ -9,10 +9,8 @@ build = "build.rs"
 crate-type = ["staticlib"]
 
 [dependencies]
-bootloader = "0.10.12"
 spin = "0.9.4"
 volatile = "0.4.5"
-x86_64 = "0.14.10"
 
 [dependencies.lazy_static]
 version = "1.4.0"
