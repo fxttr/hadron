@@ -1,38 +1,20 @@
-ENTRY(_start)
-OUTPUT_FORMAT(elf64-x86-64)
+SECTIONS
+{
+    . = 0x80000;     /* Kernel load address for AArch64 */
+    .text : { KEEP(*(.text.boot)) *(.text .text.* .gnu.linkonce.t*) }
+    .rodata : { *(.rodata .rodata.* .gnu.linkonce.r*) }
+    PROVIDE(_data = .);
+    .data : { *(.data .data.* .gnu.linkonce.d*) }
 
-BASE =  0xFFFFFFFF80000000;
-
-SECTIONS {
-    . = 0x1000;
-    . += SIZEOF_HEADERS;
-
-    .init : AT(ADDR(.init)) {
-	KEEP( *(.multiboot) )
-	*(.itext)
+    .bss (NOLOAD) : {
+        . = ALIGN(16);
+        __bss_start = .;
+        *(.bss .bss.*)
+        *(COMMON)
+        __bss_end = .;
     }
+    _end = .;
 
-    . += BASE;
-
-    .text ALIGN(0x1000) : AT(ADDR(.text) - BASE)
-    {
-        *(.text .text.*)
-    }
-
-    .rodata ALIGN(0x1000) : AT(ADDR(.rodata) - BASE)
-    {
-	*(.rodata .rodata.*)
-    }
-
-    .data ALIGN(0x1000) : AT(ADDR(.data) - BASE)
-    {
-	*(.data .data.*)
-    }
-
-    .bss : AT(ADDR(.bss) - BASE)
-    {
-	*(.bss .bss.*)
-    }
-
-    kernel_end = .;
+   /DISCARD/ : { *(.comment) *(.gnu*) *(.note*) *(.eh_frame*) }
 }
+__bss_size = (__bss_end - __bss_start)>>3;
