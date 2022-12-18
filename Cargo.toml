@@ -1,5 +1,5 @@
 [package]
-name = "lumos_rtl4"
+name = "zen"
 version = "0.0.1"
 authors = ["Florian Büstgens <fb@fx-ttr.de>"]
 edition = "2021"

@@ -1,5 +1,5 @@
 /*
- * LumOS::rtL4
+ * zen
  * Copyright (C) 2022 Florian Büstgens
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ fn main() {
     //let out_dir = env::var_os("OUT_DIR").expect("Something is really wrong. I could not find the OUT_DIR variable.");
     
     // Edit me!
-    let asm_files: [&str; 1] = ["src/arch/amd64/boot/s2.nasm"];
+    let asm_files: [&str; 1] = ["src/arch/x86_64/boot/s2.nasm"];
     let build_dir = "build";
     let tarch = "elf64";
 

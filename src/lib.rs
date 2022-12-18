@@ -21,11 +21,6 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *   _                     ___  ____          _   _    _  _
- *  | |   _   _ _ __ ___  / _ \/ ___|_ _ _ __| |_| |  | || |
- *  | |  | | | | '_ ` _ \| | | \___ (_|_) '__| __| |  | || |_
- *  | |__| |_| | | | | | | |_| |___) | _| |  | |_| |__|__   _|
- *  |_____\__,_|_| |_| |_|\___/|____(_|_)_|   \__|_____| |_|
 */
 
 #![no_std]
