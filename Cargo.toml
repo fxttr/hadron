@@ -11,6 +11,7 @@ crate-type = ["staticlib"]
 [dependencies]
 spin = "0.9.4"
 volatile = "0.4.5"
+bootloader = "0.9.23"
 
 [dependencies.lazy_static]
 version = "1.4.0"
