@@ -15,24 +15,4 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#![no_std]
-#![no_main]
-#![feature(allow_internal_unstable)]
-
-use crate::except::hcf;
-
-#[macro_use]
-pub mod io;
-pub mod api;
-pub mod except;
-pub mod arch;
-
-
-#[no_mangle]
-unsafe extern "C" fn _start() -> ! {
-    kprintln!("Copyright (C) 2023 Florian Marrero Liestmann\n");
-    kprintln!("Loading Zen...");
-
-    // hang for now
-    hcf()
-}
+ pub mod tables;
