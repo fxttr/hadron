@@ -63,12 +63,6 @@
 
         packages.default = zen;
 
-        apps.default = flake-utils.lib.mkApp {
-          drv = pkgs.writeShellScriptBin "my-app" ''
-            ${pkgs.wasmtime}/bin/wasmtime run ${zen}/bin/custom-toolchain.wasm
-          '';
-        };
-
         devShells.default = pkgs.mkShell {
           inputsFrom = builtins.attrValues self.checks;
 
