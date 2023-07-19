@@ -12,7 +12,7 @@ compile-kernel:
 
 link-kernel: compile-kernel
 	@echo "Linking kernel"
-	@ld -T src/link.ld ${BUILD_DIR}/s2.o target/x86_64-unknown-zen/${PROFILE}/libzen.a -o ${BUILD_DIR}/zen
+	@ld -T src/link.ld ${BUILD_DIR}/bootstrap.o target/x86_64-unknown-zen/${PROFILE}/libzen.a -o ${BUILD_DIR}/zen
 
 install-bootloader: ${IMG_FILE}
 	@echo "Installing Syndicate"
