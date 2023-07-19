@@ -1,5 +1,5 @@
 {
-  description = "lumos microkernel";
+  description = "LumOS";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";

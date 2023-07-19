@@ -4,15 +4,19 @@ BOOTLOADER_DIR=boot/Syndicate/
 IMG_FILE=disk0.img
 PROFILE=debug
 
-all: compile
+all: link-kernel
 
-compile:
+compile-kernel:
 	@echo "Compiling kernel"
+	@cd kernel/
 	@-cargo build
+	@cd -
 
-link:
+link-kernel: compile-kernel
 	@echo "Linking kernel"
-	@ld -T src/link.ld ${BUILD_DIR}/s2.o target/x86_64-unknown-lumos/${PROFILE}/liblumos.a -o ${BUILD_DIR}/lumos
+	@cd kernel/
+	@ld -T src/link.ld ${BUILD_DIR}/s2.o kernel/target/x86_64-unknown-lumos/${PROFILE}/liblumos.a -o ${BUILD_DIR}/lumos
+	@cd -
 
 install-bootloader: ${IMG_FILE}
 	@echo "Installing Syndicate"

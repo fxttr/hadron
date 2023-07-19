@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Florian Buestgens
+ * Copyright (c) 2022, Florian Marrero Liestmann
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -11,36 +11,36 @@
  *        this list of conditions and the following disclaimer in the
  *        documentation and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Florian Buestgens ''AS IS'' AND ANY
+ * THIS SOFTWARE IS PROVIDED BY Florian Marrero Liestmann ''AS IS'' AND ANY
  * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL Florian Buestgens BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL Florian Marrero Liestmann BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+*/
 
-use core::{fmt::{Arguments, Write} };
-use self::vga_buffer::BUFFER;
+#![no_std]
+#![no_main]
+#![feature(allow_internal_unstable)]
 
-mod vga_buffer;
+use core::panic::PanicInfo;
 
-#[allow_internal_unstable(print_internals, format_args_nl)]
-macro_rules! kprint {
-    ($($arg:tt)*) => ($crate::io::_kprint(format_args!($($arg)*)));
+pub mod api;
+
+#[macro_use]
+pub mod io;
+
+#[no_mangle]
+pub extern "C" fn _kmain() -> ! {
+    kprintln!("Copyright (C) 2022 Florian Marrero Liestmann\n");
+    loop {}
 }
 
-#[allow_internal_unstable(print_internals, format_args_nl)]
-macro_rules! kprintln {
-    () => (kprint!("\n"));
-    ($($arg:tt)*) => ({
-	$crate::io::_kprint(format_args_nl!($($arg)*));
-    })
-}
-
-pub fn _kprint(args: Arguments<'_>) {
-    let _ = BUFFER.lock().write_fmt(args);
+#[panic_handler]
+fn panic(_info: &PanicInfo) -> ! {
+    loop {}
 }
