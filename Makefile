@@ -1,22 +1,18 @@
 BUILD_DIR=build/
 MOUNT_DIR=mnt/
 BOOTLOADER_DIR=boot/Syndicate/
-IMG_FILE=lumos.img
+IMG_FILE=zen.img
 PROFILE=debug
 
 all: link-kernel
 
 compile-kernel:
 	@echo "Compiling kernel"
-	@cd kernel/
 	@-cargo build
-	@cd -
 
 link-kernel: compile-kernel
 	@echo "Linking kernel"
-	@cd kernel/
-	@ld -T kernel/src/link.ld ${BUILD_DIR}/s2.o target/x86_64-unknown-lumos/${PROFILE}/liblumos.a -o ${BUILD_DIR}/lumos
-	@cd -
+	@ld -T src/link.ld ${BUILD_DIR}/s2.o target/x86_64-unknown-zen/${PROFILE}/libzen.a -o ${BUILD_DIR}/zen
 
 install-bootloader: ${IMG_FILE}
 	@echo "Installing Syndicate"
@@ -25,7 +21,7 @@ install-bootloader: ${IMG_FILE}
 install: ${MOUNT_DIR} compile-kernel link-kernel install-bootloader
 	@echo "Installing kernel image"
 	@doas mount -o loop ${BUILD_DIR}/${IMG_FILE} ${MOUNT_DIR}
-	@doas cp ${BUILD_DIR}/lumos ${MOUNT_DIR}/mkern.sys
+	@doas cp ${BUILD_DIR}/zen ${MOUNT_DIR}/mkern.sys
 	@sync
 	@doas umount ${MOUNT_DIR}
 
@@ -38,7 +34,7 @@ ${MOUNT_DIR}:
 
 ${IMG_FILE}:
 	@echo "Creating OS disk"
-	@dd if=/dev/zero of=${BUILD_DIR}/lumos.img count=50 bs=1M
+	@dd if=/dev/zero of=${BUILD_DIR}/zen.img count=50 bs=1M
 	@parted -s -a optimal -- ${BUILD_DIR}/${IMG_FILE} mklabel msdos
 	@parted -s -a optimal -- ${BUILD_DIR}/${IMG_FILE} mkpart primary 1MiB 100%
 	@mkfs.fat -F 32 ${BUILD_DIR}/${IMG_FILE}

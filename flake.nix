@@ -1,5 +1,5 @@
 {
-  description = "LumOS";
+  description = "zen";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -55,7 +55,7 @@
 
         craneLib = (crane.mkLib pkgs).overrideToolchain fenix-toolchain;
 
-        lumos = craneLib.buildPackage {
+        zen = craneLib.buildPackage {
           src = craneLib.cleanCargoSource ./.;
 
           doCheck = false;
@@ -65,10 +65,10 @@
       in
       {
         checks = {
-          inherit lumos;
+          inherit zen;
         };
 
-        packages.default = lumos;
+        packages.default = zen;
 
         devShells.default = pkgs.mkShell {
           inputsFrom = builtins.attrValues self.checks;
