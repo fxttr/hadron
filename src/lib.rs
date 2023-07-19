@@ -23,18 +23,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*     ____      __               
- *    / __/___ _/ /________  ____ 
- *   / /_/ __ `/ / ___/ __ \/ __ \
- *  / __/ /_/ / / /__/ /_/ / / / /
- * /_/  \__,_/_/\___/\____/_/ /_/                                
- *
- *
- * Please do not expect too much from this project. 
- *
- * "But do not ask me where I am going, As I travel in this limitless world, Where every step I take is my home."
- * - Dogen Zenji
- */
+/*
+ _____     _                          _    _  _
+|  ___|_ _| | ___ ___  _ __  _ _ _ __| |  | || |
+| |_ / _` | |/ __/ _ \| '_ \(_|_) '__| |  | || |_
+|  _| (_| | | (_| (_) | | | |_ _| |  | |__|__   _|
+|_|  \__,_|_|\___\___/|_| |_(_|_)_|  |_____| |_|
+*/
 
 #![no_std]
 #![no_main]
