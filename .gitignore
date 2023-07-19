@@ -103,3 +103,4 @@ dkms.conf
 *.out
 *.app
 
+.direnv/
