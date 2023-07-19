@@ -1,5 +1,5 @@
 {
-  description = "Zen microkernel";
+  description = "lumos microkernel";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -18,6 +18,14 @@
 
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
+    };
+
+    syndicate = {
+      url = "github:fxttr/syndicate";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-utils.follows = "flake-utils";
@@ -47,7 +55,7 @@
 
         craneLib = (crane.mkLib pkgs).overrideToolchain fenix-toolchain;
 
-        zen = craneLib.buildPackage {
+        lumos = craneLib.buildPackage {
           src = craneLib.cleanCargoSource ./.;
 
           doCheck = false;
@@ -57,10 +65,10 @@
       in
       {
         checks = {
-          inherit zen;
+          inherit lumos;
         };
 
-        packages.default = zen;
+        packages.default = lumos;
 
         devShells.default = pkgs.mkShell {
           inputsFrom = builtins.attrValues self.checks;
@@ -69,6 +77,7 @@
             fenix-toolchain
             nasm
             rust-analyzer
+            qemu
           ];
         };
       });

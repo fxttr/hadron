@@ -1,3 +1,3 @@
-# Zen
+# lumos
 
-Zen is an experimental microkernel.
+lumos is an experimental microkernel.
