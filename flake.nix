@@ -42,6 +42,7 @@
           "rust-analysis"
           "rust-src"
           "rustfmt"
+          "llvm-tools-preview"
         ]);
 
         craneLib = (crane.mkLib pkgs).overrideToolchain fenix-toolchain;

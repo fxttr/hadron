@@ -104,3 +104,7 @@ dkms.conf
 *.app
 
 .direnv/
+.idea/
+.vscode/
+
+core
