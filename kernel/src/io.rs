@@ -15,24 +15,5 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-use core::{fmt::{Arguments, Write} };
-use self::vga_buffer::BUFFER;
-
-mod vga_buffer;
-
-#[allow_internal_unstable(print_internals, format_args_nl)]
-macro_rules! kprint {
-    ($($arg:tt)*) => ($crate::io::_kprint(format_args!($($arg)*)));
-}
-
-#[allow_internal_unstable(print_internals, format_args_nl)]
-macro_rules! kprintln {
-    () => (kprint!("\n"));
-    ($($arg:tt)*) => ({
-	$crate::io::_kprint(format_args_nl!($($arg)*));
-    })
-}
-
-pub fn _kprint(args: Arguments<'_>) {
-    let _ = BUFFER.lock().write_fmt(args);
-}
+#[macro_use]
+mod kprint;

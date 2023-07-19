@@ -1,53 +1,98 @@
-BUILD_DIR=build/
-MOUNT_DIR=mnt/
-BOOTLOADER_DIR=boot/Syndicate/
-IMG_FILE=zen.img
-PROFILE=debug
+# Nuke built-in rules and variables.
+override MAKEFLAGS += -rR
 
-all: link-kernel
+override IMAGE_NAME := zen
 
-compile-kernel:
-	@echo "Compiling kernel"
-	@-cargo build
+# Convenience macro to reliably declare user overridable variables.
+define DEFAULT_VAR =
+    ifeq ($(origin $1),default)
+        override $(1) := $(2)
+    endif
+    ifeq ($(origin $1),undefined)
+        override $(1) := $(2)
+    endif
+endef
 
-link-kernel: compile-kernel
-	@echo "Linking kernel"
-	@ld -T src/link.ld ${BUILD_DIR}/bootstrap.o target/x86_64-unknown-zen/${PROFILE}/libzen.a -o ${BUILD_DIR}/zen
+# Compiler for building the 'limine' executable for the host.
+override DEFAULT_HOST_CC := cc
+$(eval $(call DEFAULT_VAR,HOST_CC,$(DEFAULT_HOST_CC)))
 
-install-bootloader: ${IMG_FILE}
-	@echo "Installing Syndicate"
-	@dd if=loader.bin of=${IMG_FILE} seek=0 count=1 bs=512 conv=notrunc &>/dev/null
+.PHONY: all
+all: $(IMAGE_NAME).iso
 
-install: ${MOUNT_DIR} compile-kernel link-kernel install-bootloader
-	@echo "Installing kernel image"
-	@doas mount -o loop ${BUILD_DIR}/${IMG_FILE} ${MOUNT_DIR}
-	@doas cp ${BUILD_DIR}/zen ${MOUNT_DIR}/mkern.sys
-	@sync
-	@doas umount ${MOUNT_DIR}
+.PHONY: all-hdd
+all-hdd: $(IMAGE_NAME).hdd
 
-run: run-clean install
-	@echo "Starting..."
-	@qemu-system-x86_64 -hda ${BUILD_DIR}/${IMG_FILE}
+.PHONY: run
+run: $(IMAGE_NAME).iso
+	qemu-system-x86_64 -M q35 -m 2G -cdrom $(IMAGE_NAME).iso -boot d
 
-${MOUNT_DIR}:
-	@mkdir $@
+.PHONY: run-uefi
+run-uefi: ovmf $(IMAGE_NAME).iso
+	qemu-system-x86_64 -M q35 -m 2G -bios ovmf/OVMF.fd -cdrom $(IMAGE_NAME).iso -boot d
 
-${IMG_FILE}:
-	@echo "Creating OS disk"
-	@dd if=/dev/zero of=${BUILD_DIR}/zen.img count=50 bs=1M
-	@parted -s -a optimal -- ${BUILD_DIR}/${IMG_FILE} mklabel msdos
-	@parted -s -a optimal -- ${BUILD_DIR}/${IMG_FILE} mkpart primary 1MiB 100%
-	@mkfs.fat -F 32 ${BUILD_DIR}/${IMG_FILE}
-	
+.PHONY: run-hdd
+run-hdd: $(IMAGE_NAME).hdd
+	qemu-system-x86_64 -M q35 -m 2G -hda $(IMAGE_NAME).hdd
 
-.PHONY: clean run-clean
+.PHONY: run-hdd-uefi
+run-hdd-uefi: ovmf $(IMAGE_NAME).hdd
+	qemu-system-x86_64 -M q35 -m 2G -bios ovmf/OVMF.fd -hda $(IMAGE_NAME).hdd
 
+ovmf:
+	mkdir -p ovmf
+	cd ovmf && curl -Lo OVMF.fd https://retrage.github.io/edk2-nightly/bin/RELEASEX64_OVMF.fd
+
+limine:
+	git clone https://github.com/limine-bootloader/limine.git --branch=v5.x-branch-binary --depth=1
+	$(MAKE) -C limine CC="$(HOST_CC)"
+
+.PHONY: kernel
+kernel:
+	$(MAKE) -C kernel
+
+$(IMAGE_NAME).iso: limine kernel
+	rm -rf iso_root
+	mkdir -p iso_root
+	cp -v kernel/zen.elf \
+		limine.cfg limine/limine-bios.sys limine/limine-bios-cd.bin limine/limine-uefi-cd.bin iso_root/
+	mkdir -p iso_root/EFI/BOOT
+	cp -v limine/BOOTX64.EFI iso_root/EFI/BOOT/
+	cp -v limine/BOOTIA32.EFI iso_root/EFI/BOOT/
+	xorriso -as mkisofs -b limine-bios-cd.bin \
+		-no-emul-boot -boot-load-size 4 -boot-info-table \
+		--efi-boot limine-uefi-cd.bin \
+		-efi-boot-part --efi-boot-image --protective-msdos-label \
+		iso_root -o $(IMAGE_NAME).iso
+	./limine/limine bios-install $(IMAGE_NAME).iso
+	rm -rf iso_root
+
+$(IMAGE_NAME).hdd: limine kernel
+	rm -f $(IMAGE_NAME).hdd
+	dd if=/dev/zero bs=1M count=0 seek=64 of=$(IMAGE_NAME).hdd
+	parted -s $(IMAGE_NAME).hdd mklabel gpt
+	parted -s $(IMAGE_NAME).hdd mkpart ESP fat32 2048s 100%
+	parted -s $(IMAGE_NAME).hdd set 1 esp on
+	./limine/limine bios-install $(IMAGE_NAME).hdd
+	sudo losetup -Pf --show $(IMAGE_NAME).hdd >loopback_dev
+	sudo mkfs.fat -F 32 `cat loopback_dev`p1
+	mkdir -p img_mount
+	sudo mount `cat loopback_dev`p1 img_mount
+	sudo mkdir -p img_mount/EFI/BOOT
+	sudo cp -v kernel/zen.elf limine.cfg limine/limine-bios.sys img_mount/
+	sudo cp -v limine/BOOTX64.EFI img_mount/EFI/BOOT/
+	sudo cp -v limine/BOOTIA32.EFI img_mount/EFI/BOOT/
+	sync
+	sudo umount img_mount
+	sudo losetup -d `cat loopback_dev`
+	rm -rf loopback_dev img_mount
+
+.PHONY: clean
 clean:
-	@echo "Soft cleaning"
-	@rm -rf build/*
-	@cargo clean
+	rm -rf iso_root $(IMAGE_NAME).iso $(IMAGE_NAME).hdd
+	$(MAKE) -C kernel clean
 
-run-clean:
-	@echo "Cleaning run targets"
-	@-mdconfig -du md0
-	@rm -rf *.img
+.PHONY: distclean
+distclean: clean
+	rm -rf limine ovmf
+	$(MAKE) -C kernel distclean

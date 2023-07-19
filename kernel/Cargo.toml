@@ -5,12 +5,10 @@ authors = ["Florian Büstgens <fb@fx-ttr.de>"]
 edition = "2021"
 build = "build.rs"
 
-[lib]
-crate-type = ["staticlib"]
-
 [dependencies]
 spin = "0.9.8"
 volatile = "0.4.6"
+limine = "0.1.11"
 
 [dependencies.lazy_static]
 version = "1.4.0"

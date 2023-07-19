@@ -80,6 +80,7 @@
             qemu
             parted
             syndicate.defaultPackage.x86_64-linux
+            xorriso
           ];
         };
       });
