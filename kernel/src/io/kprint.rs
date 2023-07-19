@@ -18,7 +18,7 @@
  use core::{fmt::{Arguments, Write} };
  use self::framebuffer::BUFFER;
  
- mod framebuffer;
+ pub mod framebuffer;
  
  #[allow_internal_unstable(print_internals, format_args_nl)]
  macro_rules! kprint {
@@ -29,7 +29,7 @@
  macro_rules! kprintln {
      () => (kprint!("\n"));
      ($($arg:tt)*) => ({
-     $crate::io::_kprint(format_args_nl!($($arg)*));
+     $crate::io::kprint::_kprint(format_args_nl!($($arg)*));
      })
  }
  

@@ -16,4 +16,4 @@
  */
 
 #[macro_use]
-mod kprint;
+pub mod kprint;

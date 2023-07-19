@@ -22,6 +22,7 @@
 use core::panic::PanicInfo;
 use core::arch::asm;
 
+#[macro_use]
 pub mod io;
 pub mod api;
 
@@ -57,7 +58,6 @@ unsafe extern "C" fn _start() -> ! {
     // hang for now
     hcf()
 }
-
 
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
