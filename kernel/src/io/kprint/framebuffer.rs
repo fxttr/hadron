@@ -107,7 +107,27 @@ impl FramebufferWriter {
             '\t' => self.tab(),
             _ => {
                 let offset = (char as u8 - 32) as usize * 16;
-            }
+                for y in 0..16 {
+                    for x in 0..8 {
+                        let cx = self.col as usize + (8 - x);
+                        let cy = self.row as usize + y;
+
+                        let offset = (cx * (self.framebuffer.bpp / 8) as usize
+								+ cy * self.framebuffer.pitch as usize) as usize;
+                        
+                        if FONT[y + offset as usize] >> x & 1 == 1 {
+                            unsafe { *(self.framebuffer.address.as_ptr().unwrap().offset(offset as isize) as *mut u32) = self.fg.as_bits(); }
+                        } else {
+                            unsafe { *(self.framebuffer.address.as_ptr().unwrap().offset(offset as isize) as *mut u32) = self.bg.as_bits(); }
+                        }
+                    }
+                }
+
+                self.check_clear_row();
+
+
+
+			}
         }
     }
 
@@ -125,8 +145,22 @@ impl FramebufferWriter {
     } 
 
     #[inline]
-    fn clear_row(&mut self, row: usize) {
-    
+    fn check_clear_row(&mut self) {
+        if self.col == self.framebuffer.pitch {
+            self.write_char('\n');
+        } else {
+            self.col += FONT_DIMENSIONS.0 as u16;
+        }
+
+        if self.row == self.height {
+            let top_row_bytes = self.framebuffer.pitch as usize * FONT_DIMENSIONS.1 as usize;
+
+            for offset in 0..top_row_bytes {
+                unsafe { *(self.framebuffer.address.as_ptr().unwrap().add(offset) as *mut u32) = 0 }
+            }
+
+            self.row -= 1;
+        }
     }
 }
 
