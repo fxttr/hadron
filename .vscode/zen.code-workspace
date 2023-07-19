@@ -4,5 +4,18 @@
 			"path": ".."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"files.exclude": {
+			"**/.git": true,
+			"**/.svn": true,
+			"**/.hg": true,
+			"**/CVS": true,
+			"**/.DS_Store": true,
+			"**/Thumbs.db": true,
+			"**/.direnv": true,
+			"**/mnt": true,
+			"**/target": true,
+			"**/*.lock": true
+		}
+	}
 }
