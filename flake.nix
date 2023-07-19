@@ -33,7 +33,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, crane, flake-utils, fenix, rust-overlay, ... }:
+  outputs = { self, nixpkgs, crane, flake-utils, fenix, rust-overlay, syndicate, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
@@ -79,6 +79,7 @@
             rust-analyzer
             qemu
             parted
+            syndicate.defaultPackage.x86_64-linux
           ];
         };
       });

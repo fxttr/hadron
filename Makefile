@@ -20,7 +20,7 @@ link-kernel: compile-kernel
 
 install-bootloader: ${IMG_FILE}
 	@echo "Installing Syndicate"
-	#@dd if=loader.bin of=${IMG_FILE} seek=0 count=1 bs=512 conv=notrunc &>/dev/null
+	@dd if=loader.bin of=${IMG_FILE} seek=0 count=1 bs=512 conv=notrunc &>/dev/null
 
 install: ${MOUNT_DIR} compile-kernel link-kernel install-bootloader
 	@echo "Installing kernel image"
