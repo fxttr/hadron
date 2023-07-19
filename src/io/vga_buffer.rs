@@ -28,6 +28,16 @@ impl VgaBuffer {
 	    start: 0xb8000 as *mut u8
 	}
     }
+
+    fn set_byte_at(&mut self, byte: u8, x: isize, y: isize) {
+	unsafe {
+	    let attribute: u16 = (0 << 4) | (7 & 0x0F);
+	    let offset = ((y * 80) + x) * 2;
+	    
+	    *self.start.offset(offset) = byte | (attribute << 8) as u8;
+	    *self.start.offset(offset + 1) = 0xb;
+	}
+    }
 }
 
 impl Write for VgaBuffer {
@@ -40,13 +50,46 @@ impl Write for VgaBuffer {
     }
 
     fn write_str(&mut self, s: &str) -> core::fmt::Result {
-	Ok(for(i, &byte) in s.as_bytes().iter().enumerate() {
-	    unsafe {
-		let offset = i as isize * 2;
-		
-		*self.start.offset(offset) = byte;
-		*self.start.offset(offset + 1) = 0xb;
+	let mut line_cursor: isize = 0;
+	let mut line_multiplier: isize = 0;
+	
+	Ok(for(_ , &byte) in s.as_bytes().iter().enumerate() {
+	    line_cursor += 1;
+	    
+	    if byte as char == '\n' {
+		line_multiplier += 1;
+		line_cursor = 0;
+		continue;
 	    }
+
+	    self.set_byte_at(byte, line_cursor, line_multiplier);
+
 	})
     }
 }
+/*
+
+0 = 0 * 79 - 0
+1 = 0 + 1
+2 = 0 + 2 
+3 = 0 + 3
+4 = 0 + 4
+74 = 1 * 79 - 5
+80 = 74 + 6
+81 = 74 + 7
+82 = 74 + 8
+149 = 2 * 79 - 9
+159 = 149 + 10
+
+1234\n123\n123
+
+0 1 2 3 4 5 6 7 8 9
+....................
+10 11 12 13 14 15 16 
+....................
+20 
+....................
+....................
+....................
+....................
+*/
