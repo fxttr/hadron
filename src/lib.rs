@@ -21,11 +21,11 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *  _                     ___  ____
- * | |   _   _ _ __ ___  / _ \/ ___|
- * | |  | | | | '_ ` _ \| | | \___ \
- * | |__| |_| | | | | | | |_| |___) |
- * |_____\__,_|_| |_| |_|\___/|____/
+ *        _   _    _  _
+ *  _ __| |_| |  | || |
+ * | '__| __| |  | || |_
+ * | |  | |_| |__|__   _|
+ * |_|   \__|_____| |_|
 */
 
 #![no_std]
@@ -41,7 +41,7 @@ pub mod io;
 
 #[no_mangle]
 pub extern "C" fn _kmain() -> ! {
-    kprintln!("Copyright (C) 2022 Florian Buestgens\n  _____     _                          _    _  _\n |  ___|_ _| | ___ ___  _ __  _ _ _ __| |  | || |\n | |_ / _` | |/ __/ _ \\| '_ \\(_|_) '__| |  | || |_\n |  _| (_| | | (_| (_) | | | |_ _| |  | |__|__   _|\n |_|  \\__,_|_|\\___\\___/|_| |_(_|_)_|  |_____| |_|");
+    kprintln!("Copyright (C) 2022 Florian Buestgens\n");
     loop {}
 }
 

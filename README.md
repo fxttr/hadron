@@ -1,3 +1,3 @@
-# LumOS::rL4
+# LumOS::rtL4
 
-LumOS::rL4 (lum4) is an experimental microkernel.
+LumOS::rtL4 (lum4) is an experimental microkernel.
