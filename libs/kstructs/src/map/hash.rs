@@ -14,17 +14,3 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-pub struct Gdt {
-    table: [u64; 10],
-    next: usize,
-}
-
-impl Gdt {
-    pub const fn new() -> Self {
-        Self {
-            table: [0; 10],
-            next: 1, // entry 0 must be NULL
-        }
-    }
-}

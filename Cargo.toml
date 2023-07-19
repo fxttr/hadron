@@ -6,5 +6,7 @@ members = [
     "domains/gdt",
     "domains/cores",
     "domains/uio",
-    "domains/exception"
+    "domains/exception",
+    "domains/idt",
+    "libs/kstructs"
 ]
