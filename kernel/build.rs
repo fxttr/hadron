@@ -16,7 +16,7 @@ fn main() {
 }
 
 fn build_x86_64() {
-    let build_dir = "build";
+    let build_dir = "../build";
     let build_dir_arg = env::current_dir().unwrap().join(build_dir);
     let asm_files: [&str; 1] = ["src/arch/x86_64/boot/s2.nasm"];
     let arch = "elf64";
@@ -36,7 +36,7 @@ fn build_x86_64() {
 
 fn build_aarch68() {
     let asm_files: [&str; 1] = ["src/arch/aarch64/s2.S"];
-    let build_dir = "build";
+    let build_dir = "../build";
     let arch = "aarch64-elf";
 
     let build_dir_arg = env::current_dir().unwrap().join(build_dir);

@@ -78,6 +78,7 @@
             nasm
             rust-analyzer
             qemu
+            parted
           ];
         };
       });
