@@ -23,7 +23,7 @@
  
  #[allow_internal_unstable(print_internals, format_args_nl)]
  macro_rules! kprint {
-     ($($arg:tt)*) => ($crate::io::_kprint(format_args!($($arg)*)));
+     ($($arg:tt)*) => ($crate::io::kprint::_kprint(format_args!($($arg)*)));
  }
  
  #[allow_internal_unstable(print_internals, format_args_nl)]

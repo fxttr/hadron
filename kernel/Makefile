@@ -14,7 +14,7 @@ endif
 .PHONY: all
 all:
 	cargo build --profile $(RUST_PROFILE)
-	cp target/x86_64-unknown-zen/$(RUST_PROFILE_SUBDIR)/zen zen.elf
+	cp ../target/x86_64-unknown-zen/$(RUST_PROFILE_SUBDIR)/zen zen.elf
 
 # Remove object files and the final executable.
 .PHONY: clean

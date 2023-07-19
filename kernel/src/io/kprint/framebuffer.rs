@@ -23,9 +23,6 @@ use spin::Mutex;
 use crate::io::init;
 use crate::io::kprint::font::{FONT, FONT_DIMENSIONS};
 
-const WIDTH: usize = 80;
-const HEIGHT: usize = 25;
-
 lazy_static! {
     pub static ref WRITER: Mutex<FramebufferWriter> = Mutex::new(FramebufferWriter::new());
 }
@@ -45,9 +42,10 @@ pub struct Pixel {
 
 pub struct FramebufferWriter {
     framebuffer: &'static NonNullPtr<Framebuffer>,
-    row: u16,
-    col: u16,
-    cursor: usize,
+    row: u64,
+    col: u64,
+    pub fg: Pixel,
+	pub bg: Pixel
 }
 
 impl Pixel {
@@ -96,63 +94,61 @@ impl FramebufferWriter {
             framebuffer: init(),
             row: 0,
             col: 0,
-            cursor: 0
+            fg: Pixel::from(Colors::White),
+			bg: Pixel::from(Colors::Black),
         }
     }
 
-    #[inline]
-    fn write_char(&mut self, char: char) {
+    fn write(&mut self, char: char) {
         match char {
             '\n' => self.new_line(),
             '\t' => self.tab(),
             _ => {
                 let offset = (char as u8 - 32) as usize * 16;
+                
                 for y in 0..16 {
                     for x in 0..8 {
                         let cx = self.col as usize + (8 - x);
                         let cy = self.row as usize + y;
 
-                        let offset = (cx * (self.framebuffer.bpp / 8) as usize
+                        let ptr_offset = (cx * (self.framebuffer.bpp / 8) as usize
 								+ cy * self.framebuffer.pitch as usize) as usize;
                         
                         if FONT[y + offset as usize] >> x & 1 == 1 {
-                            unsafe { *(self.framebuffer.address.as_ptr().unwrap().offset(offset as isize) as *mut u32) = self.fg.as_bits(); }
+                            unsafe { *(self.framebuffer.address.as_ptr().unwrap().offset(ptr_offset as isize) as *mut u32) = self.fg.as_bits(); }
                         } else {
-                            unsafe { *(self.framebuffer.address.as_ptr().unwrap().offset(offset as isize) as *mut u32) = self.bg.as_bits(); }
+                            unsafe { *(self.framebuffer.address.as_ptr().unwrap().offset(ptr_offset as isize) as *mut u32) = self.bg.as_bits(); }
                         }
                     }
                 }
 
                 self.check_clear_row();
-
-
-
 			}
         }
     }
 
     #[inline]
     fn new_line(&mut self) {
-        self.row += FONT_DIMENSIONS.1 as u16;
+        self.row += FONT_DIMENSIONS.1 as u64;
         self.col = 0;
     }
 
     #[inline]
     fn tab(&mut self) {
         for _ in 0..12 {
-            self.write_char(' ');
+            let _ = self.write_char(' ');
         }
     } 
 
     #[inline]
     fn check_clear_row(&mut self) {
         if self.col == self.framebuffer.pitch {
-            self.write_char('\n');
+            let _ = self.write_char('\n');
         } else {
-            self.col += FONT_DIMENSIONS.0 as u16;
+            self.col += FONT_DIMENSIONS.0 as u64;
         }
 
-        if self.row == self.height {
+        if self.row == self.framebuffer.height {
             let top_row_bytes = self.framebuffer.pitch as usize * FONT_DIMENSIONS.1 as usize;
 
             for offset in 0..top_row_bytes {
@@ -165,13 +161,17 @@ impl FramebufferWriter {
 }
 
 impl Write for FramebufferWriter {
+    fn write_char(&mut self, c: char) -> core::fmt::Result {
+        self.write_str(c.encode_utf8(&mut [0; 4]))
+    }
+
     fn write_fmt(mut self: &mut Self, args: Arguments<'_>) -> core::fmt::Result {
         core::fmt::write(&mut self, args)
     }
 
     fn write_str(&mut self, s: &str) -> core::fmt::Result {
         Ok(for char in s.chars() {
-            self.write_char(char);
+            self.write(char);
         })
     }
 }
