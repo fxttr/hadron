@@ -29,6 +29,11 @@ function build_image() {
     echo "IMG"
 }
 
+function clean() {
+    cargo clean
+    rm -rf $BUILD_DIR
+}
+
 if [ ! -d "$BUILD_DIR" ]; then
     mkdir $BUILD_DIR
 fi
