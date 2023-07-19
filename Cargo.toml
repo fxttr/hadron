@@ -9,9 +9,9 @@ build = "build.rs"
 crate-type = ["staticlib"]
 
 [dependencies]
-spin = "0.9.4"
-volatile = "0.4.5"
-bootloader = "0.9.23"
+spin = "0.9.8"
+volatile = "0.4.6"
+bootloader = "0.11.3"
 
 [dependencies.lazy_static]
 version = "1.4.0"

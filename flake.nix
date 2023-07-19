@@ -49,8 +49,6 @@
         zen = craneLib.buildPackage {
           src = craneLib.cleanCargoSource ./.;
 
-          # Tests currently need to be run via `cargo wasi` which
-          # isn't packaged in nixpkgs yet...
           doCheck = false;
 
           buildInputs = [];
@@ -66,7 +64,6 @@
         devShells.default = pkgs.mkShell {
           inputsFrom = builtins.attrValues self.checks;
 
-          # Extra inputs can be added here
           nativeBuildInputs = with pkgs; [
             fenix-toolchain
             nasm
