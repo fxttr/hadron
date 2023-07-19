@@ -4,7 +4,7 @@ OUTPUT_FORMAT(elf64-x86-64)
 BASE =  0xFFFFFFFF80000000;
 
 SECTIONS {
-    . = 0x100000;
+    . = 0x1000;
     . += SIZEOF_HEADERS;
 
     .init : AT(ADDR(.init)) {
