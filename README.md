@@ -1,3 +1,3 @@
-# lumos
+# LumOS
 
-lumos is an experimental microkernel.
+LumOS is a minimal OS with a microkernel
