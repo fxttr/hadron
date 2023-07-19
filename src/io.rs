@@ -16,9 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use core::fmt::{Arguments, self, Write};
-
-use self::vga_buffer::VgaBuffer;
+use core::{fmt::{Arguments, Write} };
+use self::vga_buffer::BUFFER;
 
 mod vga_buffer;
 
@@ -36,13 +35,9 @@ macro_rules! kprintln {
 }
 
 pub fn _kprint(args: Arguments<'_>) {
-    _print_to(args, VgaBuffer::new, "kernel")
-}
+    use x86_64::instructions::interrupts;
 
-fn _print_to<D>(args: fmt::Arguments<'_>, func: fn() -> D, label: &str)
-where
-    D: Write
-{
-    let mut driver: D = func();
-    let _ = driver.write_fmt(args);
+    interrupts::without_interrupts(|| {
+	let _ = BUFFER.lock().write_fmt(args);
+    })
 }

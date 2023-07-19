@@ -17,30 +17,73 @@
  */
 
 use core::fmt::{Arguments, Write};
+use lazy_static::lazy_static;
+use spin::Mutex;
 
-pub struct VgaBuffer {
-    start: *mut u8
+const WIDTH: usize = 80;
+const HEIGHT: usize = 25;
+
+
+lazy_static! {
+    pub static ref BUFFER: Mutex<VgaWriter> = Mutex::new(VgaWriter {
+	memory: unsafe { &mut *(0xb8000 as *mut Memory) },
+	cursor: 0
+    });
 }
 
-impl VgaBuffer {
-    pub fn new() -> Self {
-	Self {
-	    start: 0xb8000 as *mut u8
+#[repr(transparent)]
+struct Memory {
+    chars: [[u8; WIDTH]; HEIGHT],
+}
+
+pub struct VgaWriter {
+    memory: &'static mut Memory,
+    cursor: usize
+}
+
+impl VgaWriter {
+    #[inline]
+    fn write_byte(&mut self, byte: u8) {
+	match byte {
+	    b'\n' => self.new_line(),
+	    byte => {
+		if self.cursor >= WIDTH {
+		    self.new_line();
+		}
+
+		let row = HEIGHT - 1;
+		let col = self.cursor;
+
+		self.memory.chars[row][col] = byte;
+		self.cursor += 1;
+	    }
 	}
     }
 
-    fn set_byte_at(&mut self, byte: u8, x: isize, y: isize) {
-	unsafe {
-	    let attribute: u16 = (0 << 4) | (7 & 0x0F);
-	    let offset = ((y * 80) + x) * 2;
-	    
-	    *self.start.offset(offset) = byte | (attribute << 8) as u8;
-	    *self.start.offset(offset + 1) = 0xb;
+    #[inline]
+    fn new_line(&mut self) {
+	for row in 1..HEIGHT {
+	    for col in 0..WIDTH {
+		let character = self.memory.chars[row][col];
+		self.memory.chars[row - 1][col] = character;
+	    }
 	}
+
+	self.clear_row(HEIGHT - 1);
+	self.cursor = 0;
     }
+
+
+    #[inline]
+    fn clear_row(&mut self, row: usize) {
+        for col in 0..WIDTH {
+            self.memory.chars[row][col] = b' ';
+        }
+    }
+    
 }
 
-impl Write for VgaBuffer {
+impl Write for VgaWriter {
     fn write_char(&mut self, c: char) -> core::fmt::Result {
         self.write_str(c.encode_utf8(&mut [0; 4]))
     }
@@ -50,46 +93,8 @@ impl Write for VgaBuffer {
     }
 
     fn write_str(&mut self, s: &str) -> core::fmt::Result {
-	let mut line_cursor: isize = 0;
-	let mut line_multiplier: isize = 0;
-	
-	Ok(for(_ , &byte) in s.as_bytes().iter().enumerate() {
-	    line_cursor += 1;
-	    
-	    if byte as char == '\n' {
-		line_multiplier += 1;
-		line_cursor = 0;
-		continue;
-	    }
-
-	    self.set_byte_at(byte, line_cursor, line_multiplier);
-
+	Ok(for byte in s.bytes() {
+		self.write_byte(byte);
 	})
     }
 }
-/*
-
-0 = 0 * 79 - 0
-1 = 0 + 1
-2 = 0 + 2 
-3 = 0 + 3
-4 = 0 + 4
-74 = 1 * 79 - 5
-80 = 74 + 6
-81 = 74 + 7
-82 = 74 + 8
-149 = 2 * 79 - 9
-159 = 149 + 10
-
-1234\n123\n123
-
-0 1 2 3 4 5 6 7 8 9
-....................
-10 11 12 13 14 15 16 
-....................
-20 
-....................
-....................
-....................
-....................
-*/
