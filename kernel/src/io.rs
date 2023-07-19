@@ -15,5 +15,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+use limine::{NonNullPtr, Framebuffer};
+
 #[macro_use]
 pub mod kprint;
+
+static FRAMEBUFFER_REQUEST: limine::FramebufferRequest = limine::FramebufferRequest::new(0);
+
+fn init() -> Framebuffer {
+    let framebuffer: &NonNullPtr<Framebuffer>;
+
+    if let Some(framebuffer_response) = FRAMEBUFFER_REQUEST.get_response().get() {
+        if framebuffer_response.framebuffer_count < 1 {
+            //hcf();
+        }
+
+        // Get the first framebuffer's information.
+        framebuffer = &framebuffer_response.framebuffers()[0];
+    }
+
+    framebuffer
+}
