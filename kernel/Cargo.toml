@@ -5,14 +5,11 @@ authors = ["Florian Marrero Liestmann <f.m.liestmann@fx-ttr.de>"]
 edition = "2021"
 build = "build.rs"
 
-[dependencies]
-spin = "0.9.8"
-volatile = "0.4.6"
-limine = "0.1.11"
+[dependencies.uio]
+path = "../domains/uio"
 
-[dependencies.lazy_static]
-version = "1.4.0"
-features = ["spin_no_std"]
+[dependencies.exception]
+path = "../domains/exception"
 
 [profile.dev]
 panic = "abort"

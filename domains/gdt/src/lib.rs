@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-pub struct Gdt {
+ pub struct Gdt {
     table: [u64; 10],
     next: usize,
 }

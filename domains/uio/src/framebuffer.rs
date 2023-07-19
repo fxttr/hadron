@@ -1,26 +1,27 @@
-/* 
+/*
  * This file is part of the Zen distribution (https://github.com/fxttr/zen).
  * Copyright (c) 2023 Florian Marrero Liestmann.
- * 
- * This program is free software: you can redistribute it and/or modify  
- * it under the terms of the GNU General Public License as published by  
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, version 3.
  *
- * This program is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License 
+ * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-use limine::{NonNullPtr, Framebuffer};
+use self::default::WRITER;
+use core::fmt::{Arguments, Write};
+use limine::{Framebuffer, NonNullPtr};
+use exception::hcf;
 
-use crate::except::hcf;
-
-#[macro_use]
-pub mod kprint;
+mod font;
+mod default;
 
 static FRAMEBUFFER_REQUEST: limine::FramebufferRequest = limine::FramebufferRequest::new(0);
 
@@ -39,4 +40,8 @@ pub fn init() -> &'static NonNullPtr<Framebuffer> {
     }
 
     framebuffer
+}
+
+pub fn _kprint(args: Arguments<'_>) {
+    let _ = WRITER.lock().write_fmt(args);
 }

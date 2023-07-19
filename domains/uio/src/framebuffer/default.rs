@@ -20,8 +20,8 @@ use lazy_static::lazy_static;
 use limine::{NonNullPtr, Framebuffer};
 use spin::Mutex;
 
-use crate::io::init;
-use crate::io::kprint::font::{FONT, FONT_DIMENSIONS};
+use crate::framebuffer::init;
+use crate::framebuffer::font::{FONT, FONT_DIMENSIONS};
 
 lazy_static! {
     pub static ref WRITER: Mutex<FramebufferWriter> = Mutex::new(FramebufferWriter::new());

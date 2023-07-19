@@ -19,14 +19,9 @@
 #![no_main]
 #![feature(allow_internal_unstable)]
 
-use crate::except::hcf;
+use exception::hcf;
 
-#[macro_use]
-pub mod io;
-pub mod api;
-pub mod except;
-pub mod arch;
-
+use uio::kprintln;
 
 #[no_mangle]
 unsafe extern "C" fn _start() -> ! {
