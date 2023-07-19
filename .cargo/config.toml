@@ -3,4 +3,4 @@ build-std = ["core", "compiler_builtins"]
 build-std-features = ["compiler-builtins-mem"]
 
 [build]
-target = "armv7-unknown-lumos.json"
+target = "aarch64-unknown-lumos.json"
