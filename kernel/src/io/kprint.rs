@@ -16,9 +16,10 @@
  */
 
  use core::{fmt::{Arguments, Write} };
- use self::framebuffer::BUFFER;
+ use self::framebuffer::WRITER;
  
  pub mod framebuffer;
+ pub mod font;
  
  #[allow_internal_unstable(print_internals, format_args_nl)]
  macro_rules! kprint {
@@ -34,6 +35,6 @@
  }
  
  pub fn _kprint(args: Arguments<'_>) {
-     let _ = BUFFER.lock().write_fmt(args);
+     let _ = WRITER.lock().write_fmt(args);
  }
  

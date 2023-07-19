@@ -15,22 +15,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#![no_std]
-#![no_main]
-#![feature(allow_internal_unstable)]
+use core::panic::PanicInfo;
+use core::arch::asm;
 
-use crate::except::hcf;
-
-#[macro_use]
-pub mod io;
-pub mod api;
-pub mod except;
-
-
-#[no_mangle]
-unsafe extern "C" fn _start() -> ! {
-    kprintln!("Copyright (C) 2023 Florian Marrero Liestmann\n");
-
-    // hang for now
+#[panic_handler]
+fn panic(_info: &PanicInfo) -> ! {
     hcf()
+}
+
+pub fn hcf() -> ! {
+    unsafe {
+        asm!("cli");
+        loop {
+            asm!("hlt");
+        }
+    }
 }

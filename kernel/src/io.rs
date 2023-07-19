@@ -17,21 +17,25 @@
 
 use limine::{NonNullPtr, Framebuffer};
 
+use crate::except::hcf;
+
 #[macro_use]
 pub mod kprint;
 
 static FRAMEBUFFER_REQUEST: limine::FramebufferRequest = limine::FramebufferRequest::new(0);
 
-fn init() -> Framebuffer {
+pub fn init() -> &'static NonNullPtr<Framebuffer> {
     let framebuffer: &NonNullPtr<Framebuffer>;
 
     if let Some(framebuffer_response) = FRAMEBUFFER_REQUEST.get_response().get() {
         if framebuffer_response.framebuffer_count < 1 {
-            //hcf();
+            hcf();
         }
 
         // Get the first framebuffer's information.
         framebuffer = &framebuffer_response.framebuffers()[0];
+    } else {
+        hcf();
     }
 
     framebuffer
