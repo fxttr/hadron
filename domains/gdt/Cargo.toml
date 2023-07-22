@@ -8,5 +8,8 @@ edition = "2021"
 [dependencies.cores]
 path = "../cores"
 
+[dependencies.security]
+path = "../security"
+
 [dependencies.kstructs]
 path = "../../libs/kstructs"

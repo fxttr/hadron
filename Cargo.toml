@@ -8,5 +8,7 @@ members = [
     "domains/uio",
     "domains/exception",
     "domains/idt",
-    "libs/kstructs"
+    "domains/security",
+    "libs/kstructs",
+    "libs/kzen"
 ]
