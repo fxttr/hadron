@@ -16,3 +16,4 @@
  */
 
 pub mod segmentation;
+pub mod privileges;
