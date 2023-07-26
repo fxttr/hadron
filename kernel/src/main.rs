@@ -17,7 +17,6 @@
 
 #![no_std]
 #![no_main]
-#![feature(allow_internal_unstable)]
 
 use exception::hcf;
 
