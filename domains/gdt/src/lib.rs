@@ -15,7 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-use security::segmentation::{Descriptor, SegmentSelector};
+#[cfg(target_arch = "x86_64")]
+use security::core::x86_64::segmentation::{Descriptor, SegmentSelector};
 
 pub struct Gdt {
     table: [u64; 8],

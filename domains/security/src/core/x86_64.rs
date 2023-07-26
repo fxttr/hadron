@@ -15,5 +15,5 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#[cfg(target_arch = "x86_64")]
-pub mod x86_64;
+pub mod segmentation;
+pub mod privileges;
