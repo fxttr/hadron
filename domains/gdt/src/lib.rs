@@ -15,12 +15,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-use security::segmentation::{Descriptor, SegmentSelector};
+use std::mem::size_of;
+
+use security::core::segmentation::{Descriptor, SegmentSelector};
 
 pub struct Gdt {
     table: [u64; 8],
     len: usize,
 }
+
+#[derive(Clone, Copy)]
+#[repr(C, packed(2))]
+pub struct DescriptorTablePointer {
+    pub base: VirtualAddress,
+    pub limit: u16
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[repr(transparent)]
+pub struct VirtualAddress(u64);
+
 
 impl Gdt {
     pub const fn new() -> Self {
@@ -83,5 +97,10 @@ impl Gdt {
         };
 
         SegmentSelector(i as u16)
+    }
+
+    #[inline]
+    fn as_pointer(&self) -> DescriptorTablePointer {
+        DescriptorTablePointer { base: VirtualAddress(self.table.as_ptr() as u64), limit: (self.len * size_of::<u64>() - 1) as u16 }
     }
 }
