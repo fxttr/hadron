@@ -42,7 +42,7 @@ impl Msr {
     }
 
     #[inline]
-    pub unsafe fn write(&mut self, value: u64) {
+    pub unsafe fn write(&self, value: u64) {
         let high = (value >> 32) as u32;
         let low = value as u32;
 

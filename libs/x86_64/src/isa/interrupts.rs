@@ -15,16 +15,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-pub mod interrupts;
+use std::arch::asm;
 
-use crate::registers::Msr;
-
-pub unsafe fn wrmsr(msr: u32, value: u64) {
-    Msr::new(msr).write(value)
+pub fn enable() {
+    unsafe {
+        asm!("sti", options(nomem, nostack));
+    }
 }
 
-pub fn rdmsr(msr: u32) -> u64 {
+pub fn disable() {
     unsafe {
-        Msr::new(msr).read()
+        asm!("cli", options(nomem, nostack));
     }
 }
