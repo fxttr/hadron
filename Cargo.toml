@@ -10,5 +10,5 @@ members = [
     "domains/idt",
     "domains/security",
     "libs/kstructs",
-    "libs/khadron"
+    "libs/x86_64"
 ]
