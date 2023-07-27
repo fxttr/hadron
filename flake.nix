@@ -1,5 +1,5 @@
 {
-  description = "zen";
+  description = "hadron";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -55,7 +55,7 @@
 
         craneLib = (crane.mkLib pkgs).overrideToolchain fenix-toolchain;
 
-        zen = craneLib.buildPackage {
+        hadron = craneLib.buildPackage {
           src = craneLib.cleanCargoSource ./.;
 
           doCheck = false;
@@ -65,10 +65,10 @@
       in
       {
         checks = {
-          inherit zen;
+          inherit hadron;
         };
 
-        packages.default = zen;
+        packages.default = hadron;
 
         devShells.default = pkgs.mkShell {
           inputsFrom = builtins.attrValues self.checks;

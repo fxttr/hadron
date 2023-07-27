@@ -1,7 +1,7 @@
 # Nuke built-in rules and variables.
 override MAKEFLAGS += -rR
 
-override IMAGE_NAME := zen
+override IMAGE_NAME := hadron
 
 # Convenience macro to reliably declare user overridable variables.
 define DEFAULT_VAR =
@@ -54,7 +54,7 @@ kernel:
 $(IMAGE_NAME).iso: limine kernel
 	rm -rf iso_root
 	mkdir -p iso_root
-	cp -v kernel/zen.elf \
+	cp -v kernel/hadron.elf \
 		limine.cfg limine/limine-bios.sys limine/limine-bios-cd.bin limine/limine-uefi-cd.bin iso_root/
 	mkdir -p iso_root/EFI/BOOT
 	cp -v limine/BOOTX64.EFI iso_root/EFI/BOOT/
@@ -79,7 +79,7 @@ $(IMAGE_NAME).hdd: limine kernel
 	mkdir -p img_mount
 	sudo mount `cat loopback_dev`p1 img_mount
 	sudo mkdir -p img_mount/EFI/BOOT
-	sudo cp -v kernel/zen.elf limine.cfg limine/limine-bios.sys img_mount/
+	sudo cp -v kernel/hadron.elf limine.cfg limine/limine-bios.sys img_mount/
 	sudo cp -v limine/BOOTX64.EFI img_mount/EFI/BOOT/
 	sudo cp -v limine/BOOTIA32.EFI img_mount/EFI/BOOT/
 	sync
