@@ -15,21 +15,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#![no_std]
+use std::arch::asm;
 
-use core::arch::asm;
-use core::panic::PanicInfo;
-
-#[panic_handler]
-fn panic(_info: &PanicInfo) -> ! {
-    hcf()
+pub fn enable() {
+    unsafe {
+        asm!("sti", options(nomem, nostack));
+    }
 }
 
-pub fn hcf() -> ! {
+pub fn disable() {
     unsafe {
-        asm!("cli");
-        loop {
-            asm!("hlt");
-        }
+        asm!("cli", options(nomem, nostack));
     }
 }

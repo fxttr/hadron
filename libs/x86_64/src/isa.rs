@@ -1,5 +1,5 @@
 /*
- * This file is part of the Zen distribution (https://github.com/fxttr/zen).
+ * This file is part of the hadron distribution (https://github.com/fxttr/hadron).
  * Copyright (c) 2023 Florian Marrero Liestmann.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,25 +15,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/// Represents a protection ring level.
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-#[repr(u8)]
-pub enum PLevel {
-    Ring0 = 0,
-    Ring1 = 1,
-    Ring2 = 2,
-    Ring3 = 3,
+pub mod interrupts;
+
+use crate::registers::Msr;
+
+pub unsafe fn wrmsr(msr: u32, value: u64) {
+    Msr::new(msr).write(value)
 }
 
-impl PLevel {
-    #[inline]
-    pub const fn from_u16(value: u16) -> PLevel {
-        match value {
-            0 => PLevel::Ring0,
-            1 => PLevel::Ring1,
-            2 => PLevel::Ring2,
-            3 => PLevel::Ring3,
-            _ => panic!("invalid PLevel"),
-        }
+pub fn rdmsr(msr: u32) -> u64 {
+    unsafe {
+        Msr::new(msr).read()
     }
 }

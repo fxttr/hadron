@@ -1,5 +1,5 @@
 /* 
- * This file is part of the Zen distribution (https://github.com/fxttr/zen).
+ * This file is part of the hadron distribution (https://github.com/fxttr/hadron).
  * Copyright (c) 2023 Florian Marrero Liestmann.
  * 
  * This program is free software: you can redistribute it and/or modify  

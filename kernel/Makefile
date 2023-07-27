@@ -14,13 +14,13 @@ endif
 .PHONY: all
 all:
 	cargo build --profile $(RUST_PROFILE)
-	cp ../target/x86_64-unknown-zen/$(RUST_PROFILE_SUBDIR)/zen zen.elf
+	cp ../target/x86_64-unknown-hadron/$(RUST_PROFILE_SUBDIR)/hadron hadron.elf
 
 # Remove object files and the final executable.
 .PHONY: clean
 clean:
 	cargo clean
-	rm -rf zen.elf
+	rm -rf hadron.elf
 
 .PHONY: distclean
 distclean: clean
