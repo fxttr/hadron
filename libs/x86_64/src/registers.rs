@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-use std::arch::asm;
+use core::arch::asm;
 
 pub struct Msr(u32);
 

@@ -23,7 +23,7 @@ pub mod framebuffer;
 #[allow_internal_unstable(print_internals, format_args_nl)]
 #[macro_export]
 macro_rules! kprint {
-    ($($arg:tt)*) => ($crate::io::kprint::_kprint(format_args!($($arg)*)));
+    ($($arg:tt)*) => ($crate::framebuffer::_kprint(format_args!($($arg)*)));
 }
 
 #[allow_internal_unstable(print_internals, format_args_nl)]

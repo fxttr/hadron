@@ -19,10 +19,12 @@ pub mod interrupts;
 
 use crate::registers::Msr;
 
+#[inline]
 pub unsafe fn wrmsr(msr: u32, value: u64) {
     Msr::new(msr).write(value)
 }
 
+#[inline]
 pub fn rdmsr(msr: u32) -> u64 {
     unsafe { Msr::new(msr).read() }
 }

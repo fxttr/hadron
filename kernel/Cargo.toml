@@ -8,6 +8,9 @@ build = "build.rs"
 [dependencies.uio]
 path = "../domains/uio"
 
+[dependencies.gdt]
+path = "../domains/gdt"
+
 [dependencies.exception]
 path = "../domains/exception"
 

@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+#![no_std]
 
-use std::mem::size_of;
+use core::mem::size_of;
 
 #[cfg(target_arch = "x86_64")]
 use security::core::x86_64::segmentation::{Descriptor, SegmentSelector};
@@ -100,10 +101,26 @@ impl Gdt {
     }
 
     #[inline]
+    pub fn init(&self) {
+        unsafe { self.u_init() }
+    }
+
+    #[inline]
     fn as_pointer(&self) -> DescriptorTablePointer {
         DescriptorTablePointer {
             base: VirtualAddress(self.table.as_ptr() as u64),
             limit: (self.len * size_of::<u64>() - 1) as u16,
+        }
+    }
+
+    #[inline]
+    unsafe fn u_init(&self) {
+        unsafe {
+            core::arch::asm!(
+                "lgdt [{}]",
+                in(reg) &self.as_pointer(),
+                options(readonly, nostack, preserves_flags)
+            );
         }
     }
 }

@@ -16,7 +16,7 @@
  */
 
 /// Represents a protection ring level.
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, PartialEq, PartialOrd, Eq, Hash)]
 #[repr(u8)]
 pub enum PLevel {
     Ring0 = 0,
@@ -33,7 +33,7 @@ impl PLevel {
             1 => PLevel::Ring1,
             2 => PLevel::Ring2,
             3 => PLevel::Ring3,
-            _ => panic!("invalid PLevel"),
+            _ => core::panic!("invalid PLevel"),
         }
     }
 }
