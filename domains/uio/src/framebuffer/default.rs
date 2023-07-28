@@ -17,11 +17,11 @@
 
 use core::fmt::{Arguments, Write};
 use lazy_static::lazy_static;
-use limine::{NonNullPtr, Framebuffer};
+use limine::{Framebuffer, NonNullPtr};
 use spin::Mutex;
 
-use crate::framebuffer::init;
 use crate::framebuffer::font::{FONT, FONT_DIMENSIONS};
+use crate::framebuffer::init;
 
 lazy_static! {
     pub static ref WRITER: Mutex<FramebufferWriter> = Mutex::new(FramebufferWriter::new());
@@ -31,13 +31,13 @@ pub enum Colors {
     Red,
     Green,
     White,
-    Black
+    Black,
 }
 
 pub struct Pixel {
     r: u8,
     g: u8,
-    b: u8
+    b: u8,
 }
 
 pub struct FramebufferWriter {
@@ -45,47 +45,47 @@ pub struct FramebufferWriter {
     row: u64,
     col: u64,
     pub fg: Pixel,
-	pub bg: Pixel
+    pub bg: Pixel,
 }
 
 impl Pixel {
-	pub fn new(r: u8, g: u8, b: u8) -> Self {
-		Self { r, g, b }
-	}
+    pub fn new(r: u8, g: u8, b: u8) -> Self {
+        Self { r, g, b }
+    }
 
-	pub fn set(&mut self, to: impl Into<Pixel>) {
-		let to: Pixel = to.into();
-		self.r = to.r;
-		self.g = to.g;
-		self.b = to.b;
-	}
+    pub fn set(&mut self, to: impl Into<Pixel>) {
+        let to: Pixel = to.into();
+        self.r = to.r;
+        self.g = to.g;
+        self.b = to.b;
+    }
 
-	pub fn reset(&mut self) {
-		self.r = 255;
-		self.g = 255;
-		self.b = 255;
-	}
+    pub fn reset(&mut self) {
+        self.r = 255;
+        self.g = 255;
+        self.b = 255;
+    }
 
     fn as_bits(&self) -> u32 {
-		(self.r as u32) << 16 | (self.g as u32) << 8 | self.b as u32
-	}
+        (self.r as u32) << 16 | (self.g as u32) << 8 | self.b as u32
+    }
 }
 
 impl Default for Pixel {
-	fn default() -> Self {
-		Self { r: 0, g: 0, b: 0 }
-	}
+    fn default() -> Self {
+        Self { r: 0, g: 0, b: 0 }
+    }
 }
 
 impl From<Colors> for Pixel {
     fn from(c: Colors) -> Self {
-		match c {
-			Colors::Red => Self::new(255, 0, 0),
-			Colors::Green => Self::new(0, 255, 0),
-			Colors::White => Self::new(255, 255, 255),
-            Colors::Black => Self::new(0, 0, 0)
-		}
-	}
+        match c {
+            Colors::Red => Self::new(255, 0, 0),
+            Colors::Green => Self::new(0, 255, 0),
+            Colors::White => Self::new(255, 255, 255),
+            Colors::Black => Self::new(0, 0, 0),
+        }
+    }
 }
 
 impl FramebufferWriter {
@@ -95,7 +95,7 @@ impl FramebufferWriter {
             row: 0,
             col: 0,
             fg: Pixel::from(Colors::White),
-			bg: Pixel::from(Colors::Black),
+            bg: Pixel::from(Colors::Black),
         }
     }
 
@@ -105,25 +105,42 @@ impl FramebufferWriter {
             '\t' => self.tab(),
             _ => {
                 let offset = (char as u8 - 32) as usize * 16;
-                
+
                 for y in 0..16 {
                     for x in 0..8 {
                         let cx = self.col as usize + (8 - x);
                         let cy = self.row as usize + y;
 
                         let ptr_offset = (cx * (self.framebuffer.bpp / 8) as usize
-								+ cy * self.framebuffer.pitch as usize) as usize;
-                        
+                            + cy * self.framebuffer.pitch as usize)
+                            as usize;
+
                         if FONT[y + offset as usize] >> x & 1 == 1 {
-                            unsafe { *(self.framebuffer.address.as_ptr().unwrap().offset(ptr_offset as isize) as *mut u32) = self.fg.as_bits(); }
+                            unsafe {
+                                *(self
+                                    .framebuffer
+                                    .address
+                                    .as_ptr()
+                                    .unwrap()
+                                    .offset(ptr_offset as isize)
+                                    as *mut u32) = self.fg.as_bits();
+                            }
                         } else {
-                            unsafe { *(self.framebuffer.address.as_ptr().unwrap().offset(ptr_offset as isize) as *mut u32) = self.bg.as_bits(); }
+                            unsafe {
+                                *(self
+                                    .framebuffer
+                                    .address
+                                    .as_ptr()
+                                    .unwrap()
+                                    .offset(ptr_offset as isize)
+                                    as *mut u32) = self.bg.as_bits();
+                            }
                         }
                     }
                 }
 
                 self.check_clear_row();
-			}
+            }
         }
     }
 
@@ -138,7 +155,7 @@ impl FramebufferWriter {
         for _ in 0..12 {
             let _ = self.write_char(' ');
         }
-    } 
+    }
 
     #[inline]
     fn check_clear_row(&mut self) {

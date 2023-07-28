@@ -29,13 +29,12 @@ pub struct Gdt {
 #[repr(C, packed(2))]
 pub struct DescriptorTablePointer {
     pub base: VirtualAddress,
-    pub limit: u16
+    pub limit: u16,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[repr(transparent)]
 pub struct VirtualAddress(u64);
-
 
 impl Gdt {
     pub const fn new() -> Self {
@@ -69,7 +68,7 @@ impl Gdt {
     #[inline]
     fn push(&mut self, value: u64) -> usize {
         let i = self.len;
-        
+
         self.table[i] = value;
         self.len += 1;
 
@@ -102,6 +101,9 @@ impl Gdt {
 
     #[inline]
     fn as_pointer(&self) -> DescriptorTablePointer {
-        DescriptorTablePointer { base: VirtualAddress(self.table.as_ptr() as u64), limit: (self.len * size_of::<u64>() - 1) as u16 }
+        DescriptorTablePointer {
+            base: VirtualAddress(self.table.as_ptr() as u64),
+            limit: (self.len * size_of::<u64>() - 1) as u16,
+        }
     }
 }

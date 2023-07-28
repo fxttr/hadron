@@ -17,11 +17,11 @@
 
 use self::default::WRITER;
 use core::fmt::{Arguments, Write};
-use limine::{Framebuffer, NonNullPtr};
 use exception::hcf;
+use limine::{Framebuffer, NonNullPtr};
 
-mod font;
 mod default;
+mod font;
 
 static FRAMEBUFFER_REQUEST: limine::FramebufferRequest = limine::FramebufferRequest::new(0);
 
