@@ -24,7 +24,5 @@ pub unsafe fn wrmsr(msr: u32, value: u64) {
 }
 
 pub fn rdmsr(msr: u32) -> u64 {
-    unsafe {
-        Msr::new(msr).read()
-    }
+    unsafe { Msr::new(msr).read() }
 }

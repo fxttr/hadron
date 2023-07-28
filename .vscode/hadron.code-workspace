@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/*.lock": true,
+			"**/*.direnv": true,
+		},
+		"editor.formatOnSave": true
+	}
+}

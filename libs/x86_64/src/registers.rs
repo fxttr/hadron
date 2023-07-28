@@ -33,7 +33,7 @@ impl Msr {
         asm!(
             "rdmsr",
             in("ecx") self.0,
-            out("eax") low, 
+            out("eax") low,
             out("edx") high,
             options(nomem, nostack, preserves_flags),
         );
@@ -49,7 +49,7 @@ impl Msr {
         asm!(
             "wrmsr",
             in("ecx") self.0,
-            in("eax") low, 
+            in("eax") low,
             in("edx") high,
             options(nostack, preserves_flags),
         );

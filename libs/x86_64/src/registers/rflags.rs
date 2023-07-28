@@ -95,8 +95,8 @@ fn u_read() -> u64 {
 
     unsafe {
         asm!(
-            "pushfq; pop {}", 
-            out(reg) result, 
+            "pushfq; pop {}",
+            out(reg) result,
             options(nomem, preserves_flags)
         );
     }
