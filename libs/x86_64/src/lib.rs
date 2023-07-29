@@ -16,5 +16,6 @@
  */
 #![no_std]
 
-pub mod isa;
+pub mod op;
 pub mod registers;
+pub mod structures;

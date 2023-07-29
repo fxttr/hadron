@@ -14,3 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[repr(transparent)]
+pub struct VirtualAddress(u64);
+
+impl VirtualAddress {
+    pub fn new(value: u64) -> Self {
+        Self(value)
+    }
+}
+
+impl Default for VirtualAddress {
+    fn default() -> Self {
+        Self(0)
+    }
+}

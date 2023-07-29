@@ -9,6 +9,9 @@
 			"**/*.lock": true,
 			"**/*.direnv": true,
 		},
-		"editor.formatOnSave": true
+		"editor.formatOnSave": true,
+		"rust-analyzer.linkedProjects": [
+			"./domains/gdt/Cargo.toml"
+		]
 	}
 }

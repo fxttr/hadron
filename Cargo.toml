@@ -1,5 +1,7 @@
 [workspace]
+
 resolver = "2"
+
 members = [
     "kernel",
     "domains/apic",
@@ -10,5 +12,5 @@ members = [
     "domains/idt",
     "domains/security",
     "libs/kstructs",
-    "libs/x86_64"
+    "libs/x86_64",
 ]

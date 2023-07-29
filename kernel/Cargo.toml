@@ -5,8 +5,14 @@ authors = ["Florian Marrero Liestmann <f.m.liestmann@fx-ttr.de>"]
 edition = "2021"
 build = "build.rs"
 
+[dependencies]
+lazy_static = "1.4.0"
+
 [dependencies.uio]
 path = "../domains/uio"
+
+[dependencies.security]
+path = "../domains/security"
 
 [dependencies.gdt]
 path = "../domains/gdt"

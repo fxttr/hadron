@@ -20,17 +20,15 @@
 
 use exception::hcf;
 
-use gdt::Gdt;
 use uio::{kprint, kprintln};
 
 #[no_mangle]
 unsafe extern "C" fn _start() -> ! {
     kprintln!("Copyright (C) 2023 Florian Marrero Liestmann\n");
-    kprintln!("Loading hadron...");
-    kprintln!("Setting up GDT...");
+    kprintln!("Booting hadron...");
+    kprintln!("Setting up GDT: ");
 
-    let gdt: Gdt = Gdt::new();
-    gdt.init();
+    gdt::init();
 
     kprint!("Done.");
 

@@ -15,112 +15,54 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 #![no_std]
+pub mod export;
+mod internal;
 
-use core::mem::size_of;
+use lazy_static::lazy_static;
+use security::core::x86_64::segmentation::{Descriptor, TaskStateSegment};
+use x86_64::structures::memory::VirtualAddress;
 
-#[cfg(target_arch = "x86_64")]
-use security::core::x86_64::segmentation::{Descriptor, SegmentSelector};
+use crate::{export::GlobalDescriptorTable, internal::SegmentSelectors};
 
-pub struct Gdt {
-    table: [u64; 8],
-    len: usize,
-}
+pub const DOUBLE_FAULT_IST_INDEX: u16 = 0;
+pub const STACK_SIZE: usize = 4096 * 5;
 
-#[derive(Clone, Copy)]
-#[repr(C, packed(2))]
-pub struct DescriptorTablePointer {
-    pub base: VirtualAddress,
-    pub limit: u16,
-}
-
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-#[repr(transparent)]
-pub struct VirtualAddress(u64);
-
-impl Gdt {
-    pub const fn new() -> Self {
-        Self {
-            table: [0; 8],
-            len: 1, // entry 0 must be NULL
-        }
-    }
-
-    #[inline]
-    pub fn as_raw_slice(&self) -> &[u64] {
-        &self.table[..self.len]
-    }
-
-    #[inline]
-    pub const unsafe fn u_from_raw_slice(slice: &[u64]) -> Gdt {
-        let len: usize = slice.len();
-        let mut table: [u64; 8] = [0; 8];
-        let mut i: usize = 0;
-
-        assert!(len <= 8, "A GDT cannot be longer than 8 elements.");
-
-        while len > i {
-            table[i] = slice[i];
-            i += 1;
-        }
-
-        Gdt { table, len }
-    }
-
-    #[inline]
-    fn push(&mut self, value: u64) -> usize {
-        let i = self.len;
-
-        self.table[i] = value;
-        self.len += 1;
-
-        i
-    }
-
-    #[inline]
-    pub fn add(&mut self, entry: Descriptor) -> SegmentSelector {
-        let i = match entry {
-            Descriptor::SystemSegment(low, high) => {
-                if self.len > self.table.len().saturating_sub(2) {
-                    panic!("Not enough space in GDT for holding a SystemSegment.")
-                }
-
-                let i = self.push(low);
-                self.push(high);
-                i
-            }
-            Descriptor::UserSegment(value) => {
-                if self.len > self.table.len().saturating_sub(1) {
-                    panic!("Not enough space in GDT for holding a UserSegment.")
-                }
-
-                self.push(value)
-            }
+lazy_static! {
+    static ref TASK_STATE_SEGMENT: TaskStateSegment = {
+        let tss = TaskStateSegment::new().interrupt_stack_table[DOUBLE_FAULT_IST_INDEX as usize] = {
+            static mut STACK: [u8; STACK_SIZE] = [0; STACK_SIZE];
+            let stack_start = VirtualAddress::from_ptr(unsafe { &STACK });
+            let stack_end = stack_start + STACK_SIZE;
+            stack_end
         };
+        tss
+    };
+}
 
-        SegmentSelector(i as u16)
-    }
+lazy_static! {
+    static ref GLOBAL_DESCRIPTOR_TABLE: (GlobalDescriptorTable, SegmentSelectors) = {
+        let global_descriptor_table = GlobalDescriptorTable::new();
+        let code_segment_selector = global_descriptor_table.add(Descriptor::kernel_code_segment());
+        let tss_segment_selector =
+            global_descriptor_table.add(Descriptor::tss_segment(&TASK_STATE_SEGMENT));
 
-    #[inline]
-    pub fn init(&self) {
-        unsafe { self.u_init() }
-    }
+        (
+            global_descriptor_table,
+            SegmentSelectors {
+                code_segment_selector,
+                tss_segment_selector,
+            },
+        )
+    };
+}
 
-    #[inline]
-    fn as_pointer(&self) -> DescriptorTablePointer {
-        DescriptorTablePointer {
-            base: VirtualAddress(self.table.as_ptr() as u64),
-            limit: (self.len * size_of::<u64>() - 1) as u16,
-        }
-    }
+pub fn init() {
+    use security::core::x86_64::segmentation::CodeSegment;
 
-    #[inline]
-    unsafe fn u_init(&self) {
-        unsafe {
-            core::arch::asm!(
-                "lgdt [{}]",
-                in(reg) &self.as_pointer(),
-                options(readonly, nostack, preserves_flags)
-            );
-        }
+    GLOBAL_DESCRIPTOR_TABLE.0.init();
+
+    unsafe {
+        CodeSegment::set_reg(GLOBAL_DESCRIPTOR_TABLE.1.code_segment_selector);
+        load_tss(GLOBAL_DESCRIPTOR_TABLE.1.tss_segment_selector);
     }
 }
