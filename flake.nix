@@ -23,17 +23,9 @@
         flake-utils.follows = "flake-utils";
       };
     };
-
-    syndicate = {
-      url = "github:fxttr/syndicate";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-      };
-    };
   };
 
-  outputs = { self, nixpkgs, crane, flake-utils, fenix, rust-overlay, syndicate, ... }:
+  outputs = { self, nixpkgs, crane, flake-utils, fenix, rust-overlay, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
@@ -75,11 +67,9 @@
 
           nativeBuildInputs = with pkgs; [
             fenix-toolchain
-            nasm
             rust-analyzer
             qemu
             parted
-            syndicate.defaultPackage.x86_64-linux
             xorriso
           ];
         };
