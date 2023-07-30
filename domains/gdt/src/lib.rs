@@ -19,7 +19,7 @@ pub mod export;
 mod internal;
 
 use lazy_static::lazy_static;
-use security::core::x86_64::segmentation::{Descriptor, TaskStateSegment};
+use security::core::x86_64::segmentation::{Descriptor, Segment, TaskStateSegment};
 use x86_64::structures::memory::VirtualAddress;
 
 use crate::{export::GlobalDescriptorTable, internal::SegmentSelectors};
@@ -29,19 +29,22 @@ pub const STACK_SIZE: usize = 4096 * 5;
 
 lazy_static! {
     static ref TASK_STATE_SEGMENT: TaskStateSegment = {
-        let tss = TaskStateSegment::new().interrupt_stack_table[DOUBLE_FAULT_IST_INDEX as usize] = {
+        let mut tss = TaskStateSegment::new();
+
+        tss.interrupt_stack_table[DOUBLE_FAULT_IST_INDEX as usize] = {
             static mut STACK: [u8; STACK_SIZE] = [0; STACK_SIZE];
             let stack_start = VirtualAddress::from_ptr(unsafe { &STACK });
             let stack_end = stack_start + STACK_SIZE;
             stack_end
         };
+
         tss
     };
 }
 
 lazy_static! {
     static ref GLOBAL_DESCRIPTOR_TABLE: (GlobalDescriptorTable, SegmentSelectors) = {
-        let global_descriptor_table = GlobalDescriptorTable::new();
+        let mut global_descriptor_table = GlobalDescriptorTable::new();
         let code_segment_selector = global_descriptor_table.add(Descriptor::kernel_code_segment());
         let tss_segment_selector =
             global_descriptor_table.add(Descriptor::tss_segment(&TASK_STATE_SEGMENT));
@@ -57,12 +60,18 @@ lazy_static! {
 }
 
 pub fn init() {
+    use core::arch::asm;
     use security::core::x86_64::segmentation::CodeSegment;
 
     GLOBAL_DESCRIPTOR_TABLE.0.init();
 
     unsafe {
         CodeSegment::set_reg(GLOBAL_DESCRIPTOR_TABLE.1.code_segment_selector);
-        load_tss(GLOBAL_DESCRIPTOR_TABLE.1.tss_segment_selector);
+
+        asm!(
+            "ltr {0:x}",
+            in(reg) GLOBAL_DESCRIPTOR_TABLE.1.tss_segment_selector.0,
+            options(nostack, preserves_flags)
+        );
     }
 }

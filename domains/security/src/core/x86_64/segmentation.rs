@@ -18,7 +18,7 @@
 use super::privileges::PLevel;
 use bit_field::BitField;
 use bitflags::bitflags;
-use core::mem::size_of;
+use core::{arch::asm, mem::size_of};
 use x86_64::structures::memory::VirtualAddress;
 
 pub enum Descriptor {
@@ -31,6 +31,37 @@ pub enum Descriptor {
 pub struct SegmentSelector(pub u16);
 
 pub struct CodeSegment;
+
+impl Segment for CodeSegment {
+    fn get_reg() -> SegmentSelector {
+        let result: u16;
+
+        unsafe {
+            asm!(
+                "mov {0:x}, cs",
+                out(reg) result,
+                options(nomem, nostack, preserves_flags)
+            );
+        }
+
+        SegmentSelector(result)
+    }
+
+    unsafe fn set_reg(sel: SegmentSelector) {
+        unsafe {
+            asm!(
+                "push {sel}",
+                "lea {tmp}, [1f + rip]",
+                "push {tmp}",
+                "retfq",
+                "1:",
+                sel = in(reg) u64::from(sel.0),
+                tmp = lateout(reg) _,
+                options(preserves_flags),
+            );
+        }
+    }
+}
 
 pub struct StackSegment;
 
@@ -204,4 +235,9 @@ impl TaskStateSegment {
             iomap_base: size_of::<TaskStateSegment>() as u16,
         }
     }
+}
+
+pub trait Segment {
+    fn get_reg() -> SegmentSelector;
+    unsafe fn set_reg(sel: SegmentSelector);
 }
