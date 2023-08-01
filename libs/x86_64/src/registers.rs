@@ -15,6 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+pub mod rflags;
+
 use core::arch::asm;
 
 pub struct Msr(u32);
@@ -33,7 +35,7 @@ impl Msr {
         asm!(
             "rdmsr",
             in("ecx") self.0,
-            out("eax") low,
+            out("eax") low, 
             out("edx") high,
             options(nomem, nostack, preserves_flags),
         );
@@ -49,7 +51,7 @@ impl Msr {
         asm!(
             "wrmsr",
             in("ecx") self.0,
-            in("eax") low,
+            in("eax") low, 
             in("edx") high,
             options(nostack, preserves_flags),
         );

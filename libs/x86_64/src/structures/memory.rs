@@ -40,6 +40,7 @@ impl Default for VirtualAddress {
 
 impl Add<u64> for VirtualAddress {
     type Output = Self;
+    
     #[inline]
     fn add(self, rhs: u64) -> Self::Output {
         VirtualAddress::new(self.0 + rhs)
@@ -49,6 +50,7 @@ impl Add<u64> for VirtualAddress {
 #[cfg(target_pointer_width = "64")]
 impl Add<usize> for VirtualAddress {
     type Output = Self;
+
     #[inline]
     fn add(self, rhs: usize) -> Self::Output {
         self + rhs as u64

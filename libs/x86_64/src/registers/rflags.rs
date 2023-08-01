@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 use bitflags::bitflags;
+use core::arch::asm;
 
 bitflags! {
+    #[derive(PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
     #[repr(transparent)]
-    #[derive(PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Clone, Copy)]
     pub struct RFlags: u64 {
         /// Processor feature identification flag.
         ///
@@ -77,16 +77,22 @@ bitflags! {
 
 #[inline]
 pub fn read() -> RFlags {
-    RFlags::from_bits_retain(u_read)
+    RFlags::from_bits_retain(u_read())
 }
 
 #[inline]
-pub unsafe fn write(flags: RFlags) {
-    let old_flags = read_raw();
+pub unsafe fn u_write(flags: RFlags) {
+    let old_flags = u_read();
     let reserved = old_flags & !(RFlags::all().bits());
     let new_flags = reserved | flags.bits();
 
-    u_write(new_flags);
+    unsafe {
+        asm!(
+            "push {}; popfq", 
+            in(reg) new_flags, 
+            options(nomem, preserves_flags)
+        );
+    }
 }
 
 #[inline]
