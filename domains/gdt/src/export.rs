@@ -93,7 +93,7 @@ impl GlobalDescriptorTable {
             }
         };
 
-        SegmentSelector(i as u16)
+        SegmentSelector::new(i as u16, entry.dpl())
     }
 
     #[inline]
