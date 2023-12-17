@@ -1,0 +1,26 @@
+# Nuke built-in rules and variables.
+MAKEFLAGS += -rR
+
+.ifndef RUST_PROFILE
+    RUST_PROFILE := dev
+.endif
+
+RUST_PROFILE_SUBDIR := ${RUST_PROFILE}
+.if ${RUST_PROFILE} == "dev"
+    RUST_PROFILE_SUBDIR := debug
+.endif
+
+# Default target.
+.PHONY: all
+all:
+	cargo build --profile ${RUST_PROFILE}
+	cp ../target/x86_64-unknown-hadron/${RUST_PROFILE_SUBDIR}/hadron hadron.elf
+
+# Remove object files and the final executable.
+.PHONY: clean
+clean:
+	cargo clean
+	rm -rf hadron.elf
+
+.PHONY: distclean
+distclean: clean
