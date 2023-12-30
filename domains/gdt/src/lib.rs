@@ -20,6 +20,7 @@ mod internal;
 
 use lazy_static::lazy_static;
 use security::core::x86_64::segmentation::{Descriptor, Segment, TaskStateSegment};
+use uio::kprintln;
 use x86_64::structures::memory::VirtualAddress;
 
 use crate::{export::GlobalDescriptorTable, internal::SegmentSelectors};
@@ -64,6 +65,13 @@ pub fn init() {
     use security::core::x86_64::segmentation::CodeSegment;
 
     GLOBAL_DESCRIPTOR_TABLE.0.init();
+
+    #[cfg(debug_assertions)]
+    kprintln!(
+        "GDT intialized.\nCS: {}\nTSS: {}",
+        GLOBAL_DESCRIPTOR_TABLE.1.code_segment_selector.0,
+        GLOBAL_DESCRIPTOR_TABLE.1.tss_segment_selector.0
+    );
 
     unsafe {
         CodeSegment::set_reg(GLOBAL_DESCRIPTOR_TABLE.1.code_segment_selector);

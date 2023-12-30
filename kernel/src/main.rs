@@ -30,8 +30,8 @@ unsafe extern "C" fn _start() -> ! {
 
     gdt::init();
 
-    kprint!("Done.");
+    #[cfg(debug_assertions)]
+    kprint!("Reached hcf()");
 
-    // hang for now
     hcf()
 }
