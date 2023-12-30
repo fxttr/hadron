@@ -16,3 +16,6 @@ path = "../security"
 
 [dependencies.x86_64]
 path = "../../libs/x86_64"
+
+[dependencies.uio]
+path = "../uio"
