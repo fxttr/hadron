@@ -20,15 +20,14 @@ use core::marker::PhantomData;
 use x86_64::structures::memory::VirtualAddress;
 use x86_64::types::paging::PageFaultErrorCode;
 
-pub type IDTHandlerFunction = extern "x86-interrupt" fn(&mut InterruptStackFrame);
-pub type IDTHandlerFunctionWithErrCode =
+pub type InterruptHandlerFunction = extern "x86-interrupt" fn(&mut InterruptStackFrame);
+pub type InterruptHandlerFunctionWithErrorCode =
     extern "x86-interrupt" fn(InterruptStackFrame, error_code: u64);
-pub type PageFaultIDTHandlerFunction =
+pub type PageFaultInterruptHandlerFunction =
     extern "x86-interrupt" fn(InterruptStackFrame, error_code: PageFaultErrorCode);
 
-/// An Interrupt Descriptor Table entry.
 #[repr(C)]
-pub struct IDTEntry<T> {
+pub struct InterruptDescriptorTableEntry<T> {
     pointer_low: u16,
     gdt_selector: u16,
     options: IDTEntryOptions,
