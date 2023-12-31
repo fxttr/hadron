@@ -24,8 +24,14 @@ use uio::{kprint, kprintln};
 
 #[no_mangle]
 unsafe extern "C" fn _start() -> ! {
+    #[cfg(target_arch = "x86_64")]
+    _start_x86_64()
+}
+
+fn _start_x86_64() -> ! {
     kprintln!("Copyright (C) 2023 Florian Marrero Liestmann\n");
     kprintln!("Booting hadron...");
+
     kprintln!("Setting up GDT: ");
 
     gdt::init();
