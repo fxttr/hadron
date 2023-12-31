@@ -17,13 +17,13 @@
 
 use core::arch::asm;
 
-pub fn u_enable() {
+pub fn enable() {
     unsafe {
         asm!("sti", options(nomem, nostack));
     }
 }
 
-pub fn u_disable() {
+pub fn disable() {
     unsafe {
         asm!("cli", options(nomem, nostack));
     }
