@@ -82,8 +82,10 @@ impl GlobalDescriptorTable {
 
                 let i = self.push(low);
                 self.push(high);
+
                 i
             }
+
             Descriptor::UserSegment(value) => {
                 if self.len > self.table.len().saturating_sub(1) {
                     panic!("Not enough space in GDT for holding a UserSegment.")
@@ -93,12 +95,18 @@ impl GlobalDescriptorTable {
             }
         };
 
-        SegmentSelector(i as u16)
+        SegmentSelector::new(i as u16, entry.dpl())
     }
 
     #[inline]
     pub fn init(&self) {
-        unsafe { self.u_init() }
+        unsafe {
+            core::arch::asm!(
+                "lgdt [{}]",
+                in(reg) &self.as_pointer(),
+                options(readonly, nostack, preserves_flags)
+            );
+        }
     }
 
     #[inline]
@@ -106,17 +114,6 @@ impl GlobalDescriptorTable {
         DescriptorTablePointer {
             base: VirtualAddress::new(self.table.as_ptr() as u64),
             limit: (self.len * size_of::<u64>() - 1) as u16,
-        }
-    }
-
-    #[inline]
-    unsafe fn u_init(&self) {
-        unsafe {
-            core::arch::asm!(
-                "lgdt [{}]",
-                in(reg) &self.as_pointer(),
-                options(readonly, nostack, preserves_flags)
-            );
         }
     }
 }

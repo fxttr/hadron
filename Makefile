@@ -27,9 +27,22 @@ all-hdd: $(IMAGE_NAME).hdd
 run: $(IMAGE_NAME).iso
 	qemu-system-x86_64 -M q35 -m 2G -cdrom $(IMAGE_NAME).iso -boot d
 
+.PHONY: run-debug
+run-debug: $(IMAGE_NAME).iso
+	qemu-system-x86_64 -M q35 -m 2G -cdrom $(IMAGE_NAME).iso -boot d -no-reboot -no-shutdown -s -S
+
+.PHONY: gdb
+gdb: kernel
+	gdb "kernel/hadron.elf" -ex "target remote :1234"
+
 .PHONY: run-uefi
 run-uefi: ovmf $(IMAGE_NAME).iso
 	qemu-system-x86_64 -M q35 -m 2G -bios ovmf/OVMF.fd -cdrom $(IMAGE_NAME).iso -boot d
+
+.PHONY: run-uefi-debug
+run-uefi: ovmf $(IMAGE_NAME).iso
+	qemu-system-x86_64 -M q35 -m 2G -bios ovmf/OVMF.fd -cdrom $(IMAGE_NAME).iso -boot d -no-reboot -no-shutdown -s -S
+
 
 .PHONY: run-hdd
 run-hdd: $(IMAGE_NAME).hdd

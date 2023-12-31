@@ -40,7 +40,7 @@ impl Default for VirtualAddress {
 
 impl Add<u64> for VirtualAddress {
     type Output = Self;
-    
+
     #[inline]
     fn add(self, rhs: u64) -> Self::Output {
         VirtualAddress::new(self.0 + rhs)

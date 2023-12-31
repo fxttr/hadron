@@ -1,6 +1,7 @@
 [package]
 name = "apic"
 version = "0.1.0"
+authors = ["Florian Marrero Liestmann <f.m.liestmann@fx-ttr.de>"]
 edition = "2021"
 
 [dependencies]

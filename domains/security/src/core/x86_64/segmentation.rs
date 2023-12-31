@@ -75,8 +75,8 @@ impl SegmentSelector {
     pub const NULL: Self = Self::new(0, PLevel::Ring0);
 
     #[inline]
-    pub const fn new(index: u16, rpl: PLevel) -> Self {
-        Self(index << 3 | (rpl as u16))
+    pub const fn new(index: u16, privilege_level: PLevel) -> Self {
+        Self(index << 3 | (privilege_level as u16))
     }
 
     #[inline]
@@ -86,14 +86,14 @@ impl SegmentSelector {
 
     // Requested Privilege Level ()
     #[inline]
-    pub fn rpl(self) -> PLevel {
+    pub fn privilege_level(self) -> PLevel {
         PLevel::from_u16(self.0.get_bits(0..2))
     }
 
     /// Set the privilege level for this Segment selector.
     #[inline]
-    pub fn set_rpl(&mut self, rpl: PLevel) {
-        self.0.set_bits(0..2, rpl as u16);
+    pub fn set_privilege_level(&mut self, privilege_level: PLevel) {
+        self.0.set_bits(0..2, privilege_level as u16);
     }
 }
 
@@ -159,6 +159,7 @@ impl Descriptor {
             Descriptor::SystemSegment(v, _) => v,
         };
         let dpl = (value_low & DescriptorFlags::DPL_RING_3.bits()) >> 45;
+
         PLevel::from_u16(dpl as u16)
     }
 

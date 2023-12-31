@@ -14,3 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+#![no_std]
+#![feature(abi_x86_interrupt)]
+
+pub mod export;
+mod internal;
+
+pub fn init() {}

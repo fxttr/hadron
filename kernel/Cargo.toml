@@ -17,6 +17,9 @@ path = "../domains/security"
 [dependencies.gdt]
 path = "../domains/gdt"
 
+[dependencies.idt]
+path = "../domains/idt"
+
 [dependencies.exception]
 path = "../domains/exception"
 
