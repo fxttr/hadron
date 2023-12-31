@@ -14,9 +14,5 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#![no_std]
 
-pub mod op;
-pub mod registers;
-pub mod structures;
-pub mod types;
+pub mod paging;
