@@ -14,23 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#![no_std]
-#![feature(abi_x86_interrupt)]
 
-pub mod export;
-mod handler;
-mod internal;
+use super::memory::VirtualAddress;
 
-use export::InterruptDescriptorTable;
-use lazy_static::lazy_static;
-
-lazy_static! {
-    static ref IDT: InterruptDescriptorTable = {
-        let mut idt = InterruptDescriptorTable::new();
-        idt
-    };
-}
-
-pub fn init() {
-    IDT.load()
+#[repr(C, packed(2))]
+pub struct DescriptorTablePointer {
+    pub limit: u16,
+    pub base: VirtualAddress,
 }

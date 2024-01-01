@@ -14,23 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#![no_std]
-#![feature(abi_x86_interrupt)]
 
-pub mod export;
-mod handler;
-mod internal;
+use uio::kprintln;
 
-use export::InterruptDescriptorTable;
-use lazy_static::lazy_static;
+use crate::internal::InterruptStackFrame;
 
-lazy_static! {
-    static ref IDT: InterruptDescriptorTable = {
-        let mut idt = InterruptDescriptorTable::new();
-        idt
-    };
-}
-
-pub fn init() {
-    IDT.load()
+extern "x86-interrupt" fn default_handler(stack_frame: InterruptStackFrame) {
+    kprintln!(
+        ":: KERNEL PANIC ::\nCalled default_handler. Stacktrace:\n{:#?}",
+        stack_frame
+    );
 }
