@@ -19,7 +19,7 @@ pub mod export;
 mod internal;
 
 use lazy_static::lazy_static;
-use security::core::x86_64::segmentation::{Descriptor, Segment, TaskStateSegment};
+use security::core::x86_64::segmentation::{Descriptor, Segment32, TaskStateSegment};
 use uio::kprintln;
 use x86_64::structures::memory::VirtualAddress;
 

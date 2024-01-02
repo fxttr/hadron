@@ -116,7 +116,7 @@ impl InterruptDescriptorTable {
         *self = Self::new();
     }
 
-    fn pointer(&self) -> DescriptorTablePointer {
+    fn as_descriptor_table_pointer(&self) -> DescriptorTablePointer {
         use core::mem::size_of;
 
         DescriptorTablePointer {
@@ -126,11 +126,11 @@ impl InterruptDescriptorTable {
     }
 
     #[inline]
-    pub fn load(&'static self) {
+    pub fn init(&'static self) {
         unsafe {
             asm!(
                 "lidt [{}]",
-                in(reg) &self.pointer(),
+                in(reg) &self.as_descriptor_table_pointer(),
                 options(readonly, nostack, preserves_flags)
             );
         }

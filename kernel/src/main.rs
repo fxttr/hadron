@@ -32,11 +32,11 @@ fn _start_x86_64() -> ! {
     kprintln!("Copyright (C) 2023 Florian Marrero Liestmann\n");
     kprintln!("Booting hadron...");
 
-    kprintln!("Setting up IDT: ");
-    idt::init();
-
     kprintln!("Setting up GDT: ");
     gdt::init();
+
+    kprintln!("Setting up IDT: ");
+    idt::init();
 
     #[cfg(debug_assertions)]
     kprint!("Reached hcf()");
