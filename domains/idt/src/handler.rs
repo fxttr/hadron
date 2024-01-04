@@ -15,31 +15,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#![no_std]
-#![no_main]
+use uio::kprintln;
 
-use exception::hcf;
+use crate::internal::InterruptStackFrame;
 
-use uio::{kprint, kprintln};
-
-#[no_mangle]
-unsafe extern "C" fn _start() -> ! {
-    #[cfg(target_arch = "x86_64")]
-    _start_x86_64()
-}
-
-fn _start_x86_64() -> ! {
-    kprintln!("Copyright (C) 2023 Florian Marrero Liestmann\n");
-    kprintln!("Booting hadron...");
-
-    kprintln!("Setting up GDT: ");
-    gdt::init();
-
-    kprintln!("Setting up IDT: ");
-    idt::init();
-
-    #[cfg(debug_assertions)]
-    kprint!("Reached hcf()");
-
-    hcf()
+extern "x86-interrupt" fn default_handler(stack_frame: InterruptStackFrame) {
+    kprintln!(
+        ":: KERNEL PANIC ::\nCalled default_handler. Stacktrace:\n{:#?}",
+        stack_frame
+    );
 }

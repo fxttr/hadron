@@ -16,3 +16,4 @@
  */
 
 pub mod memory;
+pub mod table;

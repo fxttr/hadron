@@ -19,7 +19,7 @@ use super::privileges::PLevel;
 use bit_field::BitField;
 use bitflags::bitflags;
 use core::{arch::asm, mem::size_of};
-use x86_64::structures::memory::VirtualAddress;
+use x86_64::{registers::Msr, structures::memory::VirtualAddress};
 
 pub enum Descriptor {
     UserSegment(u64),
@@ -32,7 +32,7 @@ pub struct SegmentSelector(pub u16);
 
 pub struct CodeSegment;
 
-impl Segment for CodeSegment {
+impl Segment32 for CodeSegment {
     fn get_reg() -> SegmentSelector {
         let result: u16;
 
@@ -47,7 +47,7 @@ impl Segment for CodeSegment {
         SegmentSelector(result)
     }
 
-    unsafe fn set_reg(sel: SegmentSelector) {
+    fn set_reg(sel: SegmentSelector) {
         unsafe {
             asm!(
                 "push {sel}",
@@ -238,7 +238,13 @@ impl TaskStateSegment {
     }
 }
 
-pub trait Segment {
+pub trait Segment32 {
     fn get_reg() -> SegmentSelector;
-    unsafe fn set_reg(sel: SegmentSelector);
+    fn set_reg(sel: SegmentSelector);
+}
+
+pub trait Segment64: Segment32 {
+    const BASE: Msr;
+    fn read_base() -> VirtualAddress;
+    fn write_base(base: VirtualAddress);
 }

@@ -32,6 +32,13 @@ impl VirtualAddress {
     }
 }
 
+impl core::fmt::Debug for VirtualAddress {
+    #[inline]
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        write!(f, "{:#x}", self.0)
+    }
+}
+
 impl Default for VirtualAddress {
     fn default() -> Self {
         Self(0)

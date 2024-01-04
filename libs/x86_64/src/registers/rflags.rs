@@ -88,8 +88,8 @@ pub unsafe fn u_write(flags: RFlags) {
 
     unsafe {
         asm!(
-            "push {}; popfq", 
-            in(reg) new_flags, 
+            "push {}; popfq",
+            in(reg) new_flags,
             options(nomem, preserves_flags)
         );
     }

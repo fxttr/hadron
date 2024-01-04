@@ -7,7 +7,37 @@ I am using this project mainly to learn more about os development and L4 microke
 
 ## Features
 At this moment the kernel doesn't have any features. I'm still in the phase of implementing the minimum features for a working x86_64 kernel.
-Later I plan to implement a efficient IPC mechanism, a first ext4 implementation and port the kernel to RISC-V.
+
+## Roadmap
+
+### Basic
+- [x] GDT
+- [ ] IDT
+- [ ] SIMD
+- [ ] PMM
+- [ ] VMM
+- [ ] Paging
+- [ ] ACPI
+- [ ] APIC
+- [ ] IOAPIC
+- [ ] LAPIC
+- [ ] HPET
+- [ ] APIC-TIMER
+- [ ] SMP
+- [ ] Multitasking
+
+### Microkernel
+- [ ] Inter-Task-IPC
+- [ ] Intra-Task-IPC
+- [ ] Servers
+
+### Userspace
+- [ ] ZFS Server
+- [ ] Syscall compliance with FreeBSD
+
+I'll try to reuse the FreeBSD Userland.
+
+Later I plan to port the kernel to RISC-V.
 
 ## Dependencies
 If you use the Nix Package Manager, there is a flake.nix in the root directory. 

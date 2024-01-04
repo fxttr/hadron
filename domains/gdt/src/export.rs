@@ -19,18 +19,11 @@ use core::mem::size_of;
 
 #[cfg(target_arch = "x86_64")]
 use security::core::x86_64::segmentation::{Descriptor, SegmentSelector};
-use x86_64::structures::memory::VirtualAddress;
+use x86_64::structures::{memory::VirtualAddress, table::DescriptorTablePointer};
 
 pub struct GlobalDescriptorTable {
     table: [u64; 8],
     len: usize,
-}
-
-#[derive(Clone, Copy)]
-#[repr(C, packed(2))]
-pub struct DescriptorTablePointer {
-    pub base: VirtualAddress,
-    pub limit: u16,
 }
 
 impl GlobalDescriptorTable {
@@ -103,14 +96,14 @@ impl GlobalDescriptorTable {
         unsafe {
             core::arch::asm!(
                 "lgdt [{}]",
-                in(reg) &self.as_pointer(),
+                in(reg) &self.as_descriptor_table_pointer(),
                 options(readonly, nostack, preserves_flags)
             );
         }
     }
 
     #[inline]
-    fn as_pointer(&self) -> DescriptorTablePointer {
+    fn as_descriptor_table_pointer(&self) -> DescriptorTablePointer {
         DescriptorTablePointer {
             base: VirtualAddress::new(self.table.as_ptr() as u64),
             limit: (self.len * size_of::<u64>() - 1) as u16,

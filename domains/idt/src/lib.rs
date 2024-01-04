@@ -18,6 +18,19 @@
 #![feature(abi_x86_interrupt)]
 
 pub mod export;
+mod handler;
 mod internal;
 
-pub fn init() {}
+use export::InterruptDescriptorTable;
+use lazy_static::lazy_static;
+
+lazy_static! {
+    static ref IDT: InterruptDescriptorTable = {
+        let mut idt = InterruptDescriptorTable::new();
+        idt
+    };
+}
+
+pub fn init() {
+    IDT.init()
+}

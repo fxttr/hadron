@@ -25,6 +25,7 @@ use crate::internal::{
 /// Intel® 64 and IA-32 Architectures Software Developer’s Manual Combined Volumes: 1, 2A, 2B, 2C, 2D, 3A, 3B, 3C, 3D, and 4
 /// Page 3220 - 3254
 #[repr(C)]
+#[repr(align(16))]
 pub struct InterruptDescriptorTable {
     /// Interrupt 0x0: Fault
     /// Indicates the divisor operand for a DIV or IDIV instruction is 0 or that the result cannot be represented in the
