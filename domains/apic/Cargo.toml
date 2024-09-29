@@ -5,4 +5,4 @@ authors = ["Florian Marrero Liestmann <f.m.liestmann@fx-ttr.de>"]
 edition = "2021"
 
 [dependencies]
-raw-cpuid = "11.0.1"
+raw-cpuid = "11.1.0"

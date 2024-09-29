@@ -6,8 +6,8 @@ edition = "2021"
 
 [dependencies]
 spin = "0.9.8"
-volatile = "0.5.1"
-limine = "0.1.11"
+volatile = "0.6.1"
+limine = "0.3.1"
 
 [dependencies.exception]
 path = "../exception"
