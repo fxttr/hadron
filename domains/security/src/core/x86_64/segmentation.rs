@@ -54,7 +54,7 @@ impl Segment32 for CodeSegment {
                 "lea {tmp}, [1f + rip]",
                 "push {tmp}",
                 "retfq",
-                "1:",
+                "2:",
                 sel = in(reg) u64::from(sel.0),
                 tmp = lateout(reg) _,
                 options(preserves_flags),

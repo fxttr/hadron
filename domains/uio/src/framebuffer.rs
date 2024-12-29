@@ -23,7 +23,8 @@ use limine::{Framebuffer, NonNullPtr};
 mod default;
 mod font;
 
-static FRAMEBUFFER_REQUEST: limine::FramebufferRequest = limine::FramebufferRequest::new(0);
+static FRAMEBUFFER_REQUEST: limine::request::FramebufferRequest =
+    limine::request::FramebufferRequest::new();
 
 pub fn init() -> &'static NonNullPtr<Framebuffer> {
     let framebuffer: &NonNullPtr<Framebuffer>;
