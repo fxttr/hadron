@@ -3,10 +3,19 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
+    pre-commit-hooks.url = "github:cachix/git-hooks.nix";
+
+    code-nix = {
+      url = "github:fxttr/code-nix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        extensions.follows = "nix-vscode-extensions";
+      };
+    };
 
     crane = {
       url = "github:ipetkov/crane";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     fenix = {
@@ -14,26 +23,23 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    flake-utils.url = "github:numtide/flake-utils";
-
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
       };
     };
   };
 
-  outputs = { self, nixpkgs, crane, flake-utils, fenix, rust-overlay, ... }:
+  outputs = { self, nixpkgs, flake-utils, ... }@inputs:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [ (import rust-overlay) ];
+          overlays = [ (import inputs.rust-overlay) ];
         };
 
-        fenix-channel = fenix.packages.${system}.latest;
+        fenix-channel = inputs.fenix.packages.${system}.latest;
 
         fenix-toolchain = (fenix-channel.withComponents [
           "rustc"
@@ -45,7 +51,7 @@
           "llvm-tools-preview"
         ]);
 
-        craneLib = (crane.mkLib pkgs).overrideToolchain fenix-toolchain;
+        craneLib = (inputs.crane.mkLib pkgs).overrideToolchain fenix-toolchain;
 
         hadron = craneLib.buildPackage {
           src = craneLib.cleanCargoSource ./.;
@@ -54,10 +60,18 @@
 
           buildInputs = [ ];
         };
+
+        code = inputs.code-nix.packages.${system}.default;
       in
       {
         checks = {
           inherit hadron;
+          pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run {
+            src = ./.;
+            hooks = {
+              rustfmt.enable = true;
+            };
+          };
         };
 
         packages.default = hadron;
@@ -72,6 +86,16 @@
             parted
             xorriso
             gdb
+            (code {
+              profiles = {
+                nix = {
+                  enable = true;
+                };
+                rust = {
+                  enable = true;
+                };
+              };
+            })
           ];
         };
       });
